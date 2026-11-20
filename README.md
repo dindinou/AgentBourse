@@ -4,6 +4,10 @@ Un agent qui investit en bourse, construit pas à pas par un débutant.
 
 > ⚠️ Projet d'apprentissage. Il fonctionne en **argent fictif** (paper trading) par défaut. Ce n'est pas un conseil en investissement.
 
+## Indice AgentBourse (suivi public, argent fictif)
+
+Nos règles transformées en indice : environ 500 actions du monde entier, notées « avis majoritaire » ou mieux, jamais citées par l'ONU, poids plafonnés à 5 %. Un agent met à jour chaque soir un portefeuille fictif de 10 000 € (GitHub Actions) et écrit son journal dans [`indice/`](indice/journal.md).
+
 ## Tableau de bord
 
 ```bash

@@ -143,3 +143,13 @@ FLAT_TAX = 0.314                     # impôt français sur les plus-values (pr�
 # --- Panier filtré (simulation avec nos propres règles) --------------------------------
 PANIER_FONDS = "iswd"          # fonds islamique de départ (voir FONDS_ISLAMIQUES)
 PANIER_NB_ACTIONS = 50         # on garde ses N plus grosses actions
+
+# --- Indice AgentBourse (suivi en argent fictif) -----------------------------------------
+INDICE_FONDS_UNIVERS = ["iswd", "isde"]   # fonds islamiques dont on prend les actions au départ
+INDICE_NIVEAUX_ADMIS = ["unanimite", "majoritaire"]   # résultats finaux qui permettent d'entrer
+INDICE_PLAFOND = 0.05                     # aucune action au-dessus de 5 % de l'indice
+INDICE_CAPITAL_DEPART_EUR = 10_000.0      # argent fictif du portefeuille au lancement
+INDICE_FRAIS_POURCENT = 0.001             # frais du portefeuille fictif sur chaque achat ou vente (0,1 %)
+INDICE_ANALYSES_EN_PARALLELE = 2          # nombre d'actions analysées en même temps (plus = Yahoo bloque)
+INDICE_ESSAIS = 6                         # nouveaux essais quand Yahoo freine
+INDICE_PAUSE_SECONDES = 30                # pause avant un nouvel essai (augmente à chaque fois)

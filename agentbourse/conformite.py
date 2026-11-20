@@ -25,6 +25,7 @@ class Chiffres:
     revenus_interets: float | None = None
     chiffre_affaires: float | None = None
     description: str = ""                        # description de l'activité (en anglais)
+    devise_cours: str = ""                       # devise dans laquelle l'action est cotée
 
 
 @dataclass

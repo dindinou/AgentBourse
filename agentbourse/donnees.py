@@ -34,7 +34,7 @@ def _revenus_interets(resultats) -> float | None:
     return max(nets + abs(payes), 0.0)
 
 
-def _taux_change(de: str, vers: str) -> float | None:
+def taux_change(de: str, vers: str) -> float | None:
     if de == vers:
         return 1.0
     historique = yf.Ticker(f"{de}{vers}=X").history(period="5d")
@@ -53,7 +53,7 @@ def charger(symbole: str) -> Chiffres:
         devise_cours, facteur = _CENTIMES[devise_cours]
     devise_comptes = info.get("financialCurrency") or devise_cours
     # La capitalisation est dans la devise du cours : on la met dans celle des comptes.
-    taux = _taux_change(devise_cours, devise_comptes) if devise_cours else None
+    taux = taux_change(devise_cours, devise_comptes) if devise_cours else None
 
     capitalisation = info.get("marketCap")
     capitalisation = capitalisation * taux if capitalisation and taux else None
@@ -92,4 +92,5 @@ def charger(symbole: str) -> Chiffres:
         revenus_interets=_revenus_interets(resultats),
         chiffre_affaires=_premiere_valeur(resultats, ["Total Revenue", "Operating Revenue"]),
         description=info.get("longBusinessSummary") or "",
+        devise_cours=devise_cours,
     )

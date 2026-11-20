@@ -12,8 +12,11 @@
 - 20/11/2026 : **tableau de bord** (`app.py`, Streamlit) : onglet analyseur (recherche, choix de l'action, 3 vérifications, légende) et onglet simulation (curseurs : versement, frais, moyenne, date de début ; tableau et courbe). Lancer : `.venv/Scripts/streamlit run app.py`.
 
 - 20/11/2026 : **panier filtré** (`agentbourse/panier.py`, `python simuler_panier.py`, onglet « 🧺 Panier filtré ») : 50 plus grosses actions de l'ETF MSCI World Islamic, moins celles citées par l'ONU (Microsoft, Chevron, BP). 70 €/mois depuis 2015 : panier complet ≈ 47 000 € nets, panier filtré ≈ 52 000 €, soit environ +5 000 €. Biais : composition d'aujourd'hui appliquée depuis 2015, donc seul l'écart entre les deux paniers a du sens. Données Yahoo imparfaites (ex. faux saut de +61 % sur Danaher en 2016, scission de Fortive).
+- 20/11/2026 : **indice AgentBourse lancé** (plan : `docs/features/indice-agentbourse.md`). 760 actions des fonds iShares MSCI World et EM Islamic analysées, **501 retenues** (avis majoritaire, pas citées par l'ONU, aucune alerte), poids plafonnés à 5 %. Portefeuille fictif de 10 000 € suivi chaque soir par `agent_quotidien.py` sur GitHub Actions (`.github/workflows/agent.yml`), résultats publics dans `indice/`. Recomposition au premier passage de chaque trimestre. Yahoo bloque si on va trop vite : 2 analyses en parallèle + pauses.
 
 ## Prochaine étape
+- Vérifier les premiers soirs de l'agent sur GitHub (onglet Actions du dépôt).
+- Une même entreprise peut entrer deux fois (ex. Samsung actions ordinaires et préférentielles) : à regrouper.
 - Mettre le tableau de bord en ligne (Streamlit Community Cloud, gratuit) pour le CV.
 - Vérifier la mise à jour 2026 de la base ONU des colonies (214 entreprises annoncées) et compléter la liste.
 - Faire relire l'échelle et la légende par Salahdin (et si possible par une personne de savoir).

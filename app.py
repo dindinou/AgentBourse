@@ -7,7 +7,7 @@ from datetime import date
 import pandas as pd
 import streamlit as st
 
-from agentbourse import alertes, config, conformite, donnees, etf, onu, panier, recherche, simulation
+from agentbourse import alertes, config, conformite, donnees, etf, indice, onu, panier, recherche, simulation
 from analyser import LEGENDE, STATUTS_FONDS, TITRES
 
 st.set_page_config(page_title="AgentBourse", page_icon="📈", layout="wide")
@@ -50,8 +50,8 @@ def euros(valeur: float) -> str:
     return f"{valeur:,.0f} €".replace(",", " ")
 
 
-onglet_analyse, onglet_simulation, onglet_panier = st.tabs(
-    ["🔎 Analyseur halal", "📈 Simulation en argent fictif", "🧺 Panier filtré"])
+onglet_indice, onglet_analyse, onglet_simulation, onglet_panier = st.tabs(
+    ["📊 Indice AgentBourse", "🔎 Analyseur halal", "📈 Simulation en argent fictif", "🧺 Panier filtré"])
 
 # --- Onglet 1 : analyseur ---------------------------------------------------------------------
 with onglet_analyse:
@@ -159,3 +159,31 @@ with onglet_panier:
         "Panier": r.nom, "Versé": euros(r.verse), "Net après impôt": euros(r.net_apres_impot),
         "Gain net": euros(r.gain_net)} for r in resultats]), hide_index=True)
     st.line_chart(pd.DataFrame({r.nom: r.courbe for r in resultats}), y_label="Valeur du portefeuille (€)")
+
+# --- Onglet 0 : indice AgentBourse ---------------------------------------------------------------
+with onglet_indice:
+    st.write("Nos règles transformées en indice : actions des fonds islamiques iShares (monde et émergents) "
+             "notées **✅ unanimité** ou **🟢 avis majoritaire**, jamais citées par l'ONU, sans activité cachée détectée. "
+             f"Poids selon la taille, plafonnés à {config.INDICE_PLAFOND:.0%}. Recomposé chaque trimestre, "
+             "surveillé chaque soir par un agent automatique. **Argent fictif uniquement.**")
+    if not indice.HISTORIQUE.exists():
+        st.info("L'indice n'a pas encore été lancé.")
+    else:
+        historique = pd.read_csv(indice.HISTORIQUE, parse_dates=["date"]).set_index("date")
+        etat = indice.lire_etat()
+        dernier = historique.iloc[-1]
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Portefeuille fictif", euros(dernier["portefeuille_eur"]),
+                  f"{dernier['portefeuille_eur'] / config.INDICE_CAPITAL_DEPART_EUR - 1:+.2%} depuis le lancement")
+        c2.metric("Indice (base 100)", f"{dernier['indice_base_100']:.2f}")
+        c3.metric("Actions", int(dernier["nb_actions"]))
+        st.caption(f"Lancé le {etat['lancement']} avec {euros(config.INDICE_CAPITAL_DEPART_EUR)} fictifs ; "
+                   f"dernier cours : {etat['date']}.")
+        if len(historique) > 1:
+            st.line_chart(historique["portefeuille_eur"], y_label="Portefeuille fictif (€)")
+        composition = pd.DataFrame([{"Action": l.nom, "Code": l.symbole, "Poids": f"{l.poids:.2%}",
+                                     "Niveau": TITRES[l.niveau]} for l in indice.lire_composition()])
+        st.markdown("**Composition**")
+        st.dataframe(composition, hide_index=True, height=300)
+        with st.expander("Journal de l'agent"):
+            st.markdown(indice.JOURNAL.read_text(encoding="utf-8"))

@@ -71,9 +71,7 @@ def symbole_yahoo(code: str, bourse: str) -> str | None:
     suffixe = SUFFIXES.get(bourse)
     if suffixe is None:
         return None
-    code = code.strip().rstrip(".").replace(" ", "-")  # NOVO B -> NOVO-B
-    if suffixe == "":
-        code = code.replace(".", "-")
+    code = code.strip().rstrip(".").replace(" ", "-").replace(".", "-")  # NOVO B -> NOVO-B, TECK.B -> TECK-B
     if suffixe == ".HK":
         code = code.zfill(4)
     if suffixe == ".KL" and not code.isdigit():
