@@ -36,9 +36,15 @@ LEGENDE = """
  Purification : part de chaque dividende à donner en aumône, car
  elle vient d'intérêts.
 
- ⚠️  Outil de tri, pas une fatwa. Certains savants refusent toute
- entreprise qui a la moindre dette à intérêt. Les chiffres viennent
- de Yahoo Finance et peuvent être faux ou anciens. En cas de doute,
+ ⚠️  IMPORTANT : chaque résultat est obtenu UNIQUEMENT avec des
+ données publiques gratuites (Yahoo Finance), parfois fausses,
+ anciennes ou incomplètes. Elles ne disent pas, par exemple, quelle
+ part du chiffre d'affaires vient d'une activité interdite cachée.
+ Un « conforme » ici veut dire « rien d'interdit trouvé dans ces
+ données », pas « vérifié ». Tout reste à vérifier.
+
+ Outil de tri, pas une fatwa. Certains savants refusent toute
+ entreprise qui a la moindre dette à intérêt. En cas de doute,
  demande à une personne de savoir.
 =====================================================================
 """
@@ -74,6 +80,7 @@ def afficher(chiffres: conformite.Chiffres) -> None:
     niveau, resultats, raison = conformite.analyser(chiffres)
     print(f"\n{chiffres.nom} ({chiffres.symbole}) — {chiffres.pays}, {chiffres.activite}")
     print(f"\n  RÉSULTAT : {TITRES[niveau]}")
+    print("  (selon les seules données publiques gratuites : à vérifier)")
     if raison:
         print(f"  Raison : {raison}")
     print("\n  Détail par norme :")

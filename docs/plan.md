@@ -3,6 +3,8 @@
 ## Où on en est
 - 20/11/2026 : projet créé (règles, dépôt GitHub public). Le plan de la V1 vient du brainstorm (projet InvestHalal, qui fait doublon).
 - 20/11/2026 : **analyseur halal, étape 1 codée** : recherche d'une action par son nom, tests selon 5 normes, échelle de conformité, légende, purification. Commande : `python analyser.py "nom de l'action"`.
+- 20/11/2026 : chaque résultat porte la mention « selon les seules données publiques gratuites : à vérifier ».
+- 20/11/2026 : **comparaison avec les ETF islamiques** (`comparer_etf.py`, rapport dans `docs/comparaison-etf.md`) : même avis que l'ETF MSCI World Islamic dans 86 % des cas, que l'ETF S&P 500 Sharia dans 81 %. Le cas grave (nous disons conforme, l'ETF écarte) touche surtout des activités interdites cachées : supermarchés (alcool, porc), divertissement et médias, filiales de crédit.
 
 ## Prochaine étape
 - Faire relire l'échelle et la légende par Salahdin (et si possible par une personne de savoir).

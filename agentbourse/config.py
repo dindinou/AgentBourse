@@ -78,3 +78,7 @@ ACTIVITES_INTERDITES_CONNUES = {
 # --- Recherche ------------------------------------------------------------------
 NB_PROPOSITIONS = 5           # nombre d'actions proposées quand on cherche un nom
 SIMILARITE_MIN = 0.6          # 0 à 1 : à partir de quand un nom connu « ressemble »
+
+# --- Comparaison avec les ETF islamiques ------------------------------------------
+# Nombre de plus grosses actions du MSCI World analysées (plus = plus long).
+COMPARAISON_NB_ACTIONS = 150
