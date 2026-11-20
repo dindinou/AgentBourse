@@ -77,3 +77,19 @@ def test_purification():
 def test_faute_de_frappe_corrigee():
     assert depuis_liste_connue("aple")[0].symbole == "AAPL"
     assert depuis_liste_connue("Total Energie")[0].symbole == "TTE.PA"
+
+
+def test_citee_par_onu_jamais_positif():
+    assert c.niveau_final(c.UNANIMITE, [], "gardee", citee_onu=True) == c.CITEE_ONU
+    assert c.niveau_final(c.NON_CONFORME, [], "gardee", citee_onu=True) == c.NON_CONFORME
+
+
+def test_recherche_dans_listes_onu():
+    from agentbourse.onu import citations
+    liste = [{"nom": "Bank Leumi Le-Israel Ltd.", "codes_yahoo": "", "source": "ONU", "reference": "n° 18"},
+             {"nom": "Egis", "codes_yahoo": "", "source": "ONU", "reference": "n° 52"},
+             {"nom": "Microsoft", "codes_yahoo": "MSFT", "source": "ONU", "reference": "par. 39"}]
+    assert citations("MSFT", "Microsoft Corporation", liste)
+    assert citations("LUMI.TA", "Bank Leumi le-Israel B.M.", liste)
+    assert not citations("6462.TW", "Egis Technology Inc.", liste)   # un seul mot : pas de faux rapprochement
+    assert not citations("AAPL", "Apple Inc.", liste)

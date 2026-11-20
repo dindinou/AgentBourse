@@ -6,8 +6,10 @@
 - 20/11/2026 : chaque résultat porte la mention « selon les seules données publiques gratuites : à vérifier ».
 - 20/11/2026 : **comparaison avec les ETF islamiques** (`comparer_etf.py`, rapport dans `docs/comparaison-etf.md`) : même avis que l'ETF MSCI World Islamic dans 86 % des cas, que l'ETF S&P 500 Sharia dans 81 %. Le cas grave (nous disons conforme, l'ETF écarte) touche surtout des activités interdites cachées : supermarchés (alcool, porc), divertissement et médias, filiales de crédit.
 - 20/11/2026 : **deux vérifications** dans l'analyseur : (1) notre calcul + un détecteur d'activités cachées (supermarché, filiale de crédit, divertissement…, réglages dans `config.py`) ; (2) l'avis de 4 fonds islamiques (iShares MSCI World / USA / EM Islamic, SP Funds S&P 500 Sharia), téléchargés automatiquement chaque semaine. **Règle : jamais d'avis positif sans un fonds islamique qui garde l'action.** Sur les 150 plus grosses actions, 28 cas graves sans cette règle ; le détecteur seul en attrape 12, la règle bloque les 28.
+- 20/11/2026 : **troisième vérification, critère éthique ONU** (`agentbourse/onu.py`, liste dans `donnees_onu/entreprises.csv`, 188 entreprises avec leur source) : rapport Albanese A/HRC/59/23 + base ONU des colonies A/HRC/60/19. Niveau 🟣 « Citée par l'ONU », jamais d'avis positif. Sur les 150 plus grosses actions : 13 citées, dont 7 gardées par un fonds islamique (Microsoft, Alphabet, Chevron, IBM, Booking, BP). Plan : `docs/features/genocide-onu.md`.
 
 ## Prochaine étape
+- Vérifier la mise à jour 2026 de la base ONU des colonies (214 entreprises annoncées) et compléter la liste.
 - Faire relire l'échelle et la légende par Salahdin (et si possible par une personne de savoir).
 - Améliorer le détecteur : 16 cas graves lui échappent encore (Coca-Cola, Nestlé, Pfizer, ADP…), voir `docs/comparaison-etf.md`.
 - Comparer nos résultats à la liste officielle malaisienne (publiée deux fois par an) pour mesurer nos erreurs.

@@ -14,7 +14,7 @@ python -m venv .venv
 .venv/Scripts/python analyser.py "apple"
 ```
 
-Deux vérifications : notre calcul (données gratuites + détecteur d'activités cachées) et l'avis de vrais fonds islamiques (ETF iShares MSCI Islamic, SP Funds S&P 500 Sharia). **Jamais d'avis positif si aucun fonds islamique ne garde l'action.**
+Deux vérifications : notre calcul (données gratuites + détecteur d'activités cachées) et l'avis de vrais fonds islamiques (ETF iShares MSCI Islamic, SP Funds S&P 500 Sharia). Troisième vérification, éthique : les listes de l'ONU (rapport A/HRC/59/23 sur l'économie du génocide à Gaza, base de données des entreprises des colonies). **Jamais d'avis positif si l'ONU cite l'entreprise, ni si aucun fonds islamique ne la garde.**
 
 Mesurer nos erreurs face aux fonds islamiques : `.venv/Scripts/python comparer_etf.py` (rapport dans `docs/comparaison-etf.md`).
 

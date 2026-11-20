@@ -4,20 +4,31 @@ Utilisation :  python analyser.py "apple"
 """
 import sys
 
-from agentbourse import alertes, conformite, donnees, etf, recherche
+from agentbourse import alertes, conformite, donnees, etf, onu, recherche
 
 LEGENDE = """
 =====================================================================
  COMMENT LIRE LE RÉSULTAT
 =====================================================================
- Deux vérifications :
+ Trois vérifications :
    1. NOTRE CALCUL, avec 5 normes (détail plus bas), plus un détecteur
       d'activités interdites cachées (supermarché, filiale de crédit…).
    2. L'AVIS DES FONDS ISLAMIQUES professionnels (ETF iShares MSCI
       Islamic et SP Funds S&P 500 Sharia), qui ont des données
       payantes plus complètes que les nôtres.
- RÈGLE : on ne donne JAMAIS d'avis positif à une action qu'aucun
- fonds islamique ne garde.
+   3. LES LISTES DE L'ONU (critère éthique en plus des normes
+      islamiques, que les fonds MSCI et S&P n'appliquent pas) :
+      - rapport A/HRC/59/23 de Francesca Albanese, rapporteuse
+        spéciale de l'ONU (juillet 2025) : entreprises qui profitent
+        de la guerre à Gaza ;
+      - base de données de l'ONU des entreprises actives dans les
+        colonies israéliennes (A/HRC/60/19, septembre 2025).
+      Le 16/09/2025, la commission d'enquête de l'ONU a conclu
+      qu'Israël commet un génocide à Gaza (Israël rejette ces
+      conclusions ; la Cour internationale de justice n'a pas
+      encore jugé sur le fond).
+ RÈGLES : on ne donne JAMAIS d'avis positif à une action citée par
+ l'ONU, ni à une action qu'aucun fonds islamique ne garde.
 
  Avis positifs (nos 2 vérifications sont d'accord) :
  ✅ Conforme à l'unanimité
@@ -33,6 +44,9 @@ LEGENDE = """
     (S&P Shariah, MSCI Islamic ou Malaisie). Cas limite.
 
  Pas d'avis positif :
+ 🟣 Citée par l'ONU (Gaza, colonies)
+    L'entreprise figure dans l'une des deux listes de l'ONU. La
+    source exacte est affichée.
  🟠 Écartée par les fonds islamiques
     Notre calcul ne trouve rien, mais les fonds islamiques l'écartent :
     ils ont vu quelque chose que nos données gratuites ne montrent pas.
@@ -63,6 +77,7 @@ TITRES = {
     conformite.UNANIMITE: "✅ Conforme à l'unanimité",
     conformite.MAJORITAIRE: "🟢 Conforme (avis majoritaire)",
     conformite.MINORITAIRE: "🟡 (Conforme) avis minoritaire",
+    conformite.CITEE_ONU: "🟣 Citée par l'ONU (Gaza, colonies)",
     conformite.ECARTEE: "🟠 Écartée par les fonds islamiques",
     conformite.A_VERIFIER: "🟠 À vérifier",
     conformite.NON_CONFIRMEE: "⚪ Non confirmée",
@@ -99,7 +114,8 @@ def afficher(chiffres: conformite.Chiffres, fonds: etf.Fonds) -> None:
     niveau_calcule, resultats, raison = conformite.analyser(chiffres)
     liste_alertes = alertes.detecter(chiffres.activite, chiffres.description)
     avis = fonds.avis(chiffres.symbole, chiffres.nom)
-    niveau = conformite.niveau_final(niveau_calcule, liste_alertes, avis.statut)
+    citations = onu.citations(chiffres.symbole, chiffres.nom)
+    niveau = conformite.niveau_final(niveau_calcule, liste_alertes, avis.statut, bool(citations))
 
     print(f"\n{chiffres.nom} ({chiffres.symbole}) — {chiffres.pays}, {chiffres.activite}")
     print(f"\n  RÉSULTAT : {TITRES[niveau]}")
@@ -119,6 +135,10 @@ def afficher(chiffres: conformite.Chiffres, fonds: etf.Fonds) -> None:
 
     print("\n  2. Avis des fonds islamiques : "
           + STATUTS_FONDS[avis.statut].format(fonds=", ".join(avis.gardee_par)))
+
+    print("\n  3. Listes de l'ONU : " + ("pas citée" if not citations else ""))
+    for c in citations:
+        print(f"       🟣 {c.source} — {c.reference}")
 
     if niveau in conformite.POSITIFS:
         print(f"\n  Purification : donner {_pourcent(conformite.purification(chiffres))} de chaque dividende.")

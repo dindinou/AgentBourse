@@ -11,12 +11,13 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from agentbourse import alertes, config, conformite, donnees, etf
+from agentbourse import alertes, config, conformite, donnees, etf, onu
 
 
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
     fonds = etf.Fonds()
+    liste_onu = onu.charger()
     monde = etf.lire("swda", config.INDICES_PARENTS["swda"])  # déjà classé de la plus grosse à la plus petite
 
     lignes = []
@@ -29,10 +30,12 @@ def main() -> None:
         niveau_calcule, _, raison = conformite.analyser(chiffres)
         liste_alertes = alertes.detecter(chiffres.activite, chiffres.description)
         avis = fonds.avis(chiffres.symbole, chiffres.nom)
+        citations = onu.citations(chiffres.symbole, chiffres.nom, liste_onu)
         lignes.append({
             "nom": action.nom.title(), "symbole": action.symbole, "calcul": niveau_calcule,
             "raison": raison or "", "alertes": liste_alertes, "fonds": avis.gardee_par,
-            "final": conformite.niveau_final(niveau_calcule, liste_alertes, avis.statut),
+            "onu": citations,
+            "final": conformite.niveau_final(niveau_calcule, liste_alertes, avis.statut, bool(citations)),
         })
         print(f"  {action.symbole:10} {niveau_calcule:12} alertes={len(liste_alertes)} fonds={len(avis.gardee_par)}")
     ecrire_rapport(lignes)
@@ -51,6 +54,8 @@ def ecrire_rapport(lignes) -> None:
     ratees = [l for l in graves if not l["alertes"]]
     fausses_alertes = [l for l in gardees if l["alertes"]]
     trop_severes = [l for l in gardees if not positif(l)]
+    citees = [l for l in lignes if l["onu"]]
+    citees_gardees = [l for l in citees if l["fonds"]]
     texte = [
         f"# Comparaison avec les ETF islamiques ({date.today():%d/%m/%Y})", "",
         f"Les {len(lignes)} plus grosses actions du MSCI World, passées dans notre calcul, puis comparées à la "
@@ -64,13 +69,17 @@ def ecrire_rapport(lignes) -> None:
         "positif : ils sont affichés « 🟠 Écartée par les fonds islamiques ».",
         f"- Fausses alertes (alerte, mais un fonds islamique la garde) : {len(fausses_alertes)} : {_liste(fausses_alertes)}.",
         f"- Trop sévères (notre calcul l'écarte, un fonds la garde) : {len(trop_severes)} : {_liste(trop_severes)}.",
+        f"- 🟣 Citées par l'ONU (Gaza, colonies) : **{len(citees)}** : {_liste(citees)}.",
+        f"  - dont gardées par un fonds islamique (que notre règle bloque en plus) : **{len(citees_gardees)}** : "
+        f"{_liste(citees_gardees)}.",
         "", "## Détail", "",
-        "| Action | Code | Notre calcul | Alertes | Fonds islamiques qui la gardent | Résultat final |",
-        "|---|---|---|---|---|---|",
+        "| Action | Code | Notre calcul | Alertes | Fonds islamiques qui la gardent | ONU | Résultat final |",
+        "|---|---|---|---|---|---|---|",
     ]
     for l in lignes:
         texte.append(f"| {l['nom']} | {l['symbole']} | {l['calcul']} {l['raison']} | "
-                     f"{'; '.join(l['alertes']) or '—'} | {', '.join(l['fonds']) or 'aucun'} | {l['final']} |")
+                     f"{'; '.join(l['alertes']) or '—'} | {', '.join(l['fonds']) or 'aucun'} | "
+                     f"{'; '.join(c.reference for c in l['onu']) or '—'} | {l['final']} |")
     (Path(__file__).parent / "docs" / "comparaison-etf.md").write_text("\n".join(texte) + "\n", encoding="utf-8")
     print("\nRapport écrit dans docs/comparaison-etf.md")
 

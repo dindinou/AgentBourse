@@ -61,6 +61,7 @@ MAJORITAIRE = "majoritaire"
 MINORITAIRE = "minoritaire"
 NON_CONFORME = "non_conforme"
 INSUFFISANT = "insuffisant"
+CITEE_ONU = "citee_onu"          # citée par l'ONU pour Gaza ou les colonies (critère éthique)
 # Niveaux donnés quand notre calcul est positif mais pas confirmé :
 ECARTEE = "ecartee"              # les fonds islamiques professionnels l'écartent
 A_VERIFIER = "a_verifier"        # activité interdite cachée possible
@@ -138,11 +139,14 @@ def analyser(chiffres: Chiffres) -> tuple[str, dict[str, ResultatNorme], str | N
     return niveau(resultats, raison), resultats, raison
 
 
-def niveau_final(niveau_calcule: str, alertes: list[str], statut_fonds: str) -> str:
-    """Règle de prudence : jamais d'avis positif sans confirmation par un fonds islamique.
+def niveau_final(niveau_calcule: str, alertes: list[str], statut_fonds: str, citee_onu: bool = False) -> str:
+    """Règles de prudence : jamais d'avis positif si l'ONU cite l'entreprise,
+    ni sans confirmation par un fonds islamique.
 
     statut_fonds : "gardee", "ecartee" ou "non_couverte" (voir agentbourse/etf.py).
     """
+    if citee_onu and niveau_calcule != NON_CONFORME:
+        return CITEE_ONU
     if niveau_calcule not in POSITIFS:
         return niveau_calcule
     if statut_fonds == "ecartee":
