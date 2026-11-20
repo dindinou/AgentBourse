@@ -21,6 +21,19 @@ def _premiere_valeur(tableau, lignes: list[str]) -> float | None:
     return None
 
 
+def _revenus_interets(resultats) -> float | None:
+    """Revenus d'intérêts. Si Yahoo ne les donne pas, on les retrouve :
+    intérêts nets = intérêts reçus - intérêts payés, donc intérêts reçus = nets + payés."""
+    direct = _premiere_valeur(resultats, ["Interest Income", "Interest Income Non Operating"])
+    if direct is not None:
+        return direct
+    nets = _premiere_valeur(resultats, ["Net Interest Income", "Net Non Operating Interest Income Expense"])
+    payes = _premiere_valeur(resultats, ["Interest Expense", "Interest Expense Non Operating"])
+    if nets is None or payes is None:
+        return None
+    return max(nets + abs(payes), 0.0)
+
+
 def _taux_change(de: str, vers: str) -> float | None:
     if de == vers:
         return 1.0
@@ -76,6 +89,7 @@ def charger(symbole: str) -> Chiffres:
         actifs=_premiere_valeur(bilan, ["Total Assets"]),
         dette=_premiere_valeur(bilan, ["Total Debt"]),
         tresorerie=tresorerie,
-        revenus_interets=_premiere_valeur(resultats, ["Interest Income", "Interest Income Non Operating"]),
+        revenus_interets=_revenus_interets(resultats),
         chiffre_affaires=_premiere_valeur(resultats, ["Total Revenue", "Operating Revenue"]),
+        description=info.get("longBusinessSummary") or "",
     )

@@ -1,172 +1,166 @@
 # Comparaison avec les ETF islamiques (20/11/2026)
 
-Les 150 plus grosses actions du MSCI World passées dans notre analyseur, comparées à la composition réelle de deux ETF islamiques :
-- **iShares MSCI World Islamic** (norme MSCI Islamic, monde entier) ;
-- **SP Funds S&P 500 Sharia (SPUS)** (norme S&P Shariah, actions américaines).
+Les 150 plus grosses actions du MSCI World, passées dans notre calcul, puis comparées à la composition de 4 fonds islamiques : iShares MSCI World Islamic, iShares MSCI USA Islamic, iShares MSCI EM Islamic, SP Funds S&P 500 Sharia.
 
-## Norme MSCI Islamic
-
-- Même avis que l'ETF : **119 sur 139** (86%).
-- 🚨 **Nous disons conforme, l'ETF l'écarte : 16** (le cas grave) : Amazon.Com Inc (AMZN), Alphabet Class A (GOOGL), Meta Platforms Class A (META), Alphabet Class C (GOOG), Walmart (WMT), Costco Wholesale Corp (COST), Roche Ps Par Ag (ROP.SW), Novartis Ag (NOVN.SW), Netflix (NFLX), Siemens N Ag (SIE.DE), Walt Disney (DIS), Abbott Laboratories (ABT), Sony Group (6758.T), Pfizer (PFE), Automatic Data Processing Inc (ADP), Parker-Hannifin (PH).
-- Nous l'écartons, l'ETF la garde : 4 : Micron Technology (MU), Welltower (WELL), Intuitive Surgical (ISRG), Loreal Sa (OR.PA).
-
-## Norme S&P Shariah
-
-- Même avis que l'ETF : **74 sur 91** (81%).
-- 🚨 **Nous disons conforme, l'ETF l'écarte : 14** (le cas grave) : Amazon.Com Inc (AMZN), Meta Platforms Class A (META), Alphabet Class C (GOOG), Walmart (WMT), Costco Wholesale Corp (COST), Coca-Cola (KO), Caterpillar Inc (CAT), Intel Corporation (INTC), Netflix (NFLX), Walt Disney (DIS), Mcdonalds Corp (MCD), Automatic Data Processing Inc (ADP), Starbucks Corp (SBUX), Parker-Hannifin (PH).
-- Nous l'écartons, l'ETF la garde : 3 : Welltower (WELL), Lowes Companies Inc (LOW), Marvell Technology (MRVL).
+- Gardées par au moins un fonds islamique : **71** ; écartées par tous : **79**.
+- 🚨 **Cas graves** (notre calcul dit conforme, les fonds écartent) : **28**.
+  - attrapés par notre détecteur d'activités cachées : **12** : Amazon.Com Inc (AMZN), Meta Platforms Class A (META), Walmart (WMT), Costco Wholesale Corp (COST), Caterpillar Inc (CAT), Netflix (NFLX), Siemens N Ag (SIE.DE), Walt Disney (DIS), Mcdonalds Corp (MCD), Sony Group (6758.T), Recruit Holdings (6098.T), Starbucks Corp (SBUX).
+  - ratés par notre détecteur : **16** : Coca-Cola (KO), Roche Ps Par Ag (ROP.SW), Unitedhealth Group (UNH), Novartis Ag (NOVN.SW), Nestle Sa (NESN.SW), Amgen Inc (AMGN), Amphenol Corp Class A (APH), Shopify Subordinate Voting Class A (SHOP.TO), Pfizer (PFE), Unilever Plc (ULVR.L), Eaton Plc (ETN), Advantest (6857.T), Automatic Data Processing Inc (ADP), Parker-Hannifin (PH), Cme Group Class A (CME), Compagnie Financiere Richemont Sa (CFR.SW).
+  - Avec la règle « jamais positif sans un fonds islamique », ces cas graves ne reçoivent plus d'avis positif : ils sont affichés « 🟠 Écartée par les fonds islamiques ».
+- Fausses alertes (alerte, mais un fonds islamique la garde) : 3 : Alphabet Class A (GOOGL), Alphabet Class C (GOOG), Gilead Sciences (GILD).
+- Trop sévères (notre calcul l'écarte, un fonds la garde) : 5 : Welltower (WELL), Salesforce (CRM), Lowes Companies Inc (LOW), Tokyo Electron (8035.T), Marvell Technology (MRVL).
 
 ## Détail
 
-| Action | Code | Notre niveau | Notre test MSCI | Dans l'ETF MSCI | Notre test S&P | Dans l'ETF S&P |
-|---|---|---|---|---|---|---|
-| Apple | AAPL | majoritaire  | non | non | oui | oui |
-| Microsoft | MSFT | majoritaire  | oui | oui | oui | oui |
-| Nvidia | NVDA | majoritaire  | non | non | oui | oui |
-| Amazon.Com Inc | AMZN | majoritaire  | oui | non | oui | non |
-| Alphabet Class A | GOOGL | majoritaire  | oui | non | oui | oui |
-| Broadcom Inc | AVGO | majoritaire  | non | non | oui | oui |
-| Meta Platforms Class A | META | majoritaire  | oui | non | oui | non |
-| Alphabet Class C | GOOG | majoritaire  | oui | non | oui | non |
-| Eli Lilly | LLY | majoritaire  | non | non | oui | oui |
-| Tesla Inc | TSLA | majoritaire  | oui | oui | oui | oui |
-| Jpmorgan Chase & Co | JPM | non_conforme secteur interdit (Banks - Diversified) | — | non | — | non |
-| Berkshire Hathaway Inc Class B | BRK-B | non_conforme secteur interdit (Insurance - Diversified) | — | non | — | non |
-| Advanced Micro Devices | AMD | majoritaire  | oui | oui | oui | oui |
-| Micron Technology | MU | majoritaire  | non | oui | oui | oui |
-| Visa Class A | V | non_conforme secteur interdit (Credit Services) | — | non | — | non |
-| Exxonmobil Holdings Corp | XOM | insuffisant  | — | oui | — | oui |
-| Johnson & Johnson | JNJ | majoritaire  | oui | oui | oui | oui |
-| Walmart | WMT | majoritaire  | oui | non | oui | non |
-| Asml Holding | ASML.AS | majoritaire  | oui | oui | — | — |
-| Mastercard Class A | MA | non_conforme secteur interdit (Credit Services) | — | non | — | non |
-| Abbvie | ABBV | majoritaire  | non | non | oui | oui |
-| Costco Wholesale Corp | COST | majoritaire  | oui | non | oui | non |
-| Procter & Gamble | PG | majoritaire  | oui | oui | oui | oui |
-| Chevron | CVX | insuffisant  | — | oui | — | non |
-| Cisco Systems Inc | CSCO | majoritaire  | oui | oui | oui | oui |
-| Coca-Cola | KO | majoritaire  | non | non | oui | non |
-| Home Depot | HD | majoritaire  | non | non | oui | oui |
-| Palantir Technologies Class A | PLTR | non_conforme  | non | non | non | non |
-| Roche Ps Par Ag | ROP.SW | majoritaire  | oui | non | — | — |
-| Ge Aerospace | GE | non_conforme secteur interdit (Aerospace & Defense) | — | non | — | non |
-| Merck & Co Inc | MRK | majoritaire  | non | non | oui | oui |
-| Bank Of America | BAC | non_conforme secteur interdit (Banks - Diversified) | — | non | — | non |
-| Unitedhealth Group | UNH | insuffisant  | — | non | — | non |
-| Palo Alto Networks | PANW | majoritaire  | oui | oui | oui | oui |
-| Philip Morris International | PM | non_conforme tabac | — | non | — | non |
-| Hsbc Holdings Plc | HSBA.L | non_conforme secteur interdit (Banks - Diversified) | — | non | — | — |
-| Novartis Ag | NOVN.SW | majoritaire  | oui | non | — | — |
-| Shell | SHEL.L | majoritaire  | oui | oui | — | — |
-| Applied Material Inc | AMAT | majoritaire  | oui | oui | oui | oui |
-| Royal Bank Of Canada | RY.TO | non_conforme secteur interdit (Banks - Diversified) | — | non | — | — |
-| Astrazeneca Plc | AZN.L | majoritaire  | oui | oui | — | — |
-| Rtx | RTX | non_conforme secteur interdit (Aerospace & Defense) | — | non | — | non |
-| Texas Instrument | TXN | insuffisant  | non | non | — | oui |
-| Thermo Fisher Scientific | TMO | majoritaire  | non | non | oui | oui |
-| Nestle Sa | NESN.SW | majoritaire  | non | non | — | — |
-| Lam Research | LRCX | majoritaire  | oui | oui | oui | oui |
-| Caterpillar Inc | CAT | majoritaire  | non | non | oui | non |
-| Goldman Sachs Group | GS | non_conforme secteur interdit (Capital Markets) | — | non | — | non |
-| Wells Fargo | WFC | non_conforme secteur interdit (Banks - Diversified) | — | non | — | non |
-| Intel Corporation | INTC | majoritaire  | oui | oui | oui | non |
-| Netflix | NFLX | majoritaire  | oui | non | oui | non |
-| Crowdstrike Holdings Class A | CRWD | majoritaire  | non | non | oui | oui |
-| Linde Plc | LIN | majoritaire  | oui | oui | oui | oui |
-| Amgen Inc | AMGN | insuffisant  | non | non | — | non |
-| Siemens N Ag | SIE.DE | majoritaire  | oui | non | — | — |
-| Mitsubishi Ufj Financial Group | 8306.T | non_conforme secteur interdit (Banks - Diversified) | — | non | — | — |
-| Sap | SAP.DE | majoritaire  | oui | oui | — | — |
-| Walt Disney | DIS | majoritaire  | oui | non | oui | non |
-| International Business Machines Co | IBM | minoritaire  | non | non | oui | oui |
-| Gilead Sciences | GILD | majoritaire  | non | non | oui | oui |
-| Morgan Stanley | MS | non_conforme secteur interdit (Capital Markets) | — | non | — | non |
-| Ge Vernova | GEV | majoritaire  | oui | oui | oui | oui |
-| Arista Networks | ANET | majoritaire  | non | non | oui | oui |
-| Citigroup | C | non_conforme secteur interdit (Banks - Diversified) | — | non | — | non |
-| Toyota Motor | 7203.T | non_conforme  | non | non | — | — |
-| Mcdonalds Corp | MCD | majoritaire  | non | non | oui | non |
-| Commonwealth Bank Of Australia | CBA.AX | non_conforme secteur interdit (Banks - Diversified) | — | non | — | — |
-| Toronto Dominion | TD.TO | non_conforme secteur interdit (Banks - Diversified) | — | non | — | — |
-| Oracle | ORCL | minoritaire  | non | non | oui | oui |
-| Pepsico | PEP | insuffisant  | non | non | — | oui |
-| Allianz | ALV.DE | non_conforme secteur interdit (Insurance - Diversified) | — | non | — | — |
-| Verizon Communications Inc | VZ | non_conforme  | non | non | non | non |
-| Amphenol Corp Class A | APH | insuffisant  | non | non | — | non |
-| Analog Devices | ADI | majoritaire  | oui | oui | oui | oui |
-| Kla | KLAC | majoritaire  | non | non | oui | oui |
-| Abbott Laboratories | ABT | majoritaire  | oui | non | oui | oui |
-| Bhp Group Ltd | BHP.AX | majoritaire  | oui | oui | — | — |
-| Nextera Energy | NEE | non_conforme  | non | non | non | non |
-| Qualcomm | QCOM | majoritaire  | oui | oui | oui | oui |
-| Totalenergies | TTE.PA | minoritaire  | oui | oui | — | — |
-| Welltower | WELL | non_conforme secteur interdit (REIT - Healthcare Facilities) | — | oui | — | oui |
-| Union Pacific | UNP | majoritaire  | non | non | oui | oui |
-| Blackrock | BLK | non_conforme secteur interdit (Asset Management) | — | non | — | non |
-| Banco Santander | SAN.MC | non_conforme secteur interdit (Banks - Diversified) | — | non | — | — |
-| American Express | AXP | non_conforme secteur interdit (Credit Services) | — | non | — | non |
-| Conocophillips | COP | majoritaire  | oui | oui | oui | oui |
-| Sony Group | 6758.T | majoritaire  | oui | non | — | — |
-| Shopify Subordinate Voting Class A | SHOP.TO | majoritaire  | non | non | — | — |
-| Pfizer | PFE | minoritaire  | oui | non | non | non |
-| Iberdrola | IBE.MC | non_conforme  | non | non | — | — |
-| At&T | T | non_conforme  | non | non | non | non |
-| Deere | DE | non_conforme  | non | non | non | non |
-| Charles Schwab | SCHW | non_conforme secteur interdit (Capital Markets) | — | non | — | non |
-| Tjx | TJX | majoritaire  | non | non | oui | oui |
-| Recruit Holdings | 6098.T | majoritaire  | non | non | — | — |
-| Salesforce | CRM | insuffisant  | — | non | — | oui |
-| Ubs Group Ag | UBSG.SW | non_conforme secteur interdit (Banks - Diversified) | — | non | — | — |
-| Intuitive Surgical | ISRG | majoritaire  | non | oui | oui | oui |
-| Rolls-Royce Holdings Plc | RR.L | non_conforme secteur interdit (Aerospace & Defense) | — | non | — | — |
-| Schneider Electric | SU.PA | majoritaire  | oui | oui | — | — |
-| Danaher | DHR | majoritaire  | oui | oui | oui | oui |
-| Sumitomo Mitsui Financial Group | 8316.T | non_conforme secteur interdit (Banks - Diversified) | — | non | — | — |
-| Hitachi | 6501.T | majoritaire  | oui | oui | — | — |
-| Banco Bilbao Vizcaya Argentaria | BBVA.MC | non_conforme secteur interdit (Banks - Diversified) | — | non | — | — |
-| S&P Global | SPGI | insuffisant  | — | non | — | non |
-| Unilever Plc | ULVR.L | majoritaire  | non | non | — | — |
-| Progressive | PGR | non_conforme secteur interdit (Insurance - Property & Casualty) | — | non | — | non |
-| Accenture Plc Class A | ACN | majoritaire  | oui | oui | oui | oui |
-| Airbus Group | AIR.PA | non_conforme secteur interdit (Aerospace & Defense) | — | non | — | — |
-| Vertex Pharmaceuticals | VRTX | majoritaire  | non | non | oui | oui |
-| Medtronic Plc | MDT | insuffisant  | — | oui | — | oui |
-| Eaton Plc | ETN | insuffisant  | — | non | — | non |
-| Chubb | CB | non_conforme secteur interdit (Insurance - Property & Casualty) | — | non | — | non |
-| Lair Liquide Societe Anonyme Pour | AI.PA | majoritaire  | oui | oui | — | — |
-| Abb Ltd | ABBN.SW | majoritaire  | oui | oui | — | — |
-| Novo Nordisk Class B | NOVO B.CO | insuffisant  | — | oui | — | — |
-| Mckesson Corp | MCK | majoritaire  | oui | oui | oui | oui |
-| Advantest | 6857.T | majoritaire  | non | non | — | — |
-| Altria Group Inc | MO | non_conforme secteur interdit (Tobacco) | — | non | — | non |
-| Lowes Companies Inc | LOW | non_conforme  | non | non | non | oui |
-| Tokyo Electron | 8035.T | insuffisant  | — | oui | — | — |
-| Bristol Myers Squibb | BMY | non_conforme  | non | non | non | non |
-| Automatic Data Processing Inc | ADP | majoritaire  | oui | non | oui | non |
-| Boeing | BA | non_conforme secteur interdit (Aerospace & Defense) | — | non | — | non |
-| Unicredit | UCG.MI | non_conforme secteur interdit (Banks - Regional) | — | non | — | — |
-| Starbucks Corp | SBUX | majoritaire  | non | non | oui | non |
-| Marvell Technology | MRVL | non_conforme  | non | non | non | oui |
-| Lockheed Martin | LMT | non_conforme secteur interdit (Aerospace & Defense) | — | non | — | non |
-| Uber Technologies | UBER | majoritaire  | oui | oui | oui | oui |
-| Seagate Technology Holdings Plc | STX | majoritaire  | non | non | oui | oui |
-| Safran Sa | SAF.PA | non_conforme secteur interdit (Aerospace & Defense) | — | non | — | — |
-| Prologis Reit | PLD | non_conforme secteur interdit (REIT - Industrial) | — | non | — | non |
-| British American Tobacco | BATS.L | non_conforme tabac | — | non | — | — |
-| Booking Holdings | BKNG | majoritaire  | non | non | oui | oui |
-| Parker-Hannifin | PH | majoritaire  | oui | non | oui | non |
-| Mizuho Financial Group | 8411.T | non_conforme secteur interdit (Banks - Regional) | — | non | — | — |
-| Cme Group Class A | CME | insuffisant  | — | non | — | non |
-| Bank Of Montreal | BMO.TO | non_conforme secteur interdit (Banks - Diversified) | — | non | — | — |
-| Sandisk | SNDK | majoritaire  | oui | oui | oui | oui |
-| Compagnie Financiere Richemont Sa | CFR.SW | majoritaire  | non | non | — | — |
-| Bp Plc | BP.L | minoritaire  | oui | oui | — | — |
-| Loreal Sa | OR.PA | majoritaire  | non | oui | — | — |
-| Marathon Petroleum | MPC | non_conforme  | non | non | non | non |
-| Zurich Insurance Group Ag | ZURN.SW | non_conforme secteur interdit (Insurance - Diversified) | — | non | — | — |
-| Newmont | NEM | majoritaire  | oui | oui | oui | oui |
-| Capital One Financial Corp | COF | non_conforme secteur interdit (Credit Services) | — | non | — | non |
-| Bank Of Nova Scotia | BNS.TO | non_conforme secteur interdit (Banks - Diversified) | — | non | — | — |
-| Stryker | SYK | insuffisant  | — | non | — | oui |
-| Siemens Energy N Ag | ENR.DE | majoritaire  | oui | oui | — | — |
-| Southern | SO | non_conforme  | non | non | non | non |
+| Action | Code | Notre calcul | Alertes | Fonds islamiques qui la gardent | Résultat final |
+|---|---|---|---|---|---|
+| Apple | AAPL | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Microsoft | MSFT | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Nvidia | NVDA | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Amazon.Com Inc | AMZN | majoritaire  | vente en ligne : vend souvent de l'alcool et du porc (activité : Internet Retail) | aucun | ecartee |
+| Alphabet Class A | GOOGL | majoritaire  | revenus de publicité : exclus par la norme S&P (activité : Internet Content & Information) | SP Funds S&P 500 Sharia | a_verifier |
+| Broadcom Inc | AVGO | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Meta Platforms Class A | META | majoritaire  | revenus de publicité : exclus par la norme S&P (activité : Internet Content & Information) | aucun | ecartee |
+| Alphabet Class C | GOOG | majoritaire  | revenus de publicité : exclus par la norme S&P (activité : Internet Content & Information) | SP Funds S&P 500 Sharia | a_verifier |
+| Eli Lilly | LLY | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Tesla Inc | TSLA | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Jpmorgan Chase & Co | JPM | non_conforme secteur interdit (Banks - Diversified) | — | aucun | non_conforme |
+| Berkshire Hathaway Inc Class B | BRK-B | non_conforme secteur interdit (Insurance - Diversified) | — | aucun | non_conforme |
+| Advanced Micro Devices | AMD | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Micron Technology | MU | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, iShares MSCI EM Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Visa Class A | V | non_conforme secteur interdit (Credit Services) | — | aucun | non_conforme |
+| Exxonmobil Holdings Corp | XOM | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Johnson & Johnson | JNJ | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Walmart | WMT | majoritaire  | supermarché : vend souvent de l'alcool et du porc (activité : Discount Stores) | aucun | ecartee |
+| Asml Holding | ASML.AS | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Mastercard Class A | MA | non_conforme secteur interdit (Credit Services) | — | aucun | non_conforme |
+| Abbvie | ABBV | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Costco Wholesale Corp | COST | majoritaire  | supermarché : vend souvent de l'alcool et du porc (activité : Discount Stores); alcool (« liquor »); tabac (« tobacco ») | aucun | ecartee |
+| Procter & Gamble | PG | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Chevron | CVX | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic | majoritaire |
+| Cisco Systems Inc | CSCO | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Coca-Cola | KO | majoritaire  | — | aucun | ecartee |
+| Home Depot | HD | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Palantir Technologies Class A | PLTR | non_conforme  | — | aucun | non_conforme |
+| Roche Ps Par Ag | ROP.SW | majoritaire  | — | aucun | ecartee |
+| Ge Aerospace | GE | non_conforme secteur interdit (Aerospace & Defense) | — | aucun | non_conforme |
+| Merck & Co Inc | MRK | majoritaire  | — | iShares MSCI World Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Bank Of America | BAC | non_conforme secteur interdit (Banks - Diversified) | — | aucun | non_conforme |
+| Unitedhealth Group | UNH | majoritaire  | — | aucun | ecartee |
+| Palo Alto Networks | PANW | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Philip Morris International | PM | non_conforme tabac | tabac (« tobacco ») | aucun | non_conforme |
+| Hsbc Holdings Plc | HSBA.L | non_conforme secteur interdit (Banks - Diversified) | — | aucun | non_conforme |
+| Novartis Ag | NOVN.SW | majoritaire  | — | aucun | ecartee |
+| Shell | SHEL.L | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Applied Material Inc | AMAT | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Royal Bank Of Canada | RY.TO | non_conforme secteur interdit (Banks - Diversified) | activité bancaire (« banking services ») | aucun | non_conforme |
+| Astrazeneca Plc | AZN.L | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Rtx | RTX | non_conforme secteur interdit (Aerospace & Defense) | — | aucun | non_conforme |
+| Texas Instrument | TXN | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Thermo Fisher Scientific | TMO | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Nestle Sa | NESN.SW | majoritaire  | — | aucun | ecartee |
+| Lam Research | LRCX | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Caterpillar Inc | CAT | majoritaire  | filiale de crédit ou d'assurance (« Financial Products segment ») | aucun | ecartee |
+| Goldman Sachs Group | GS | non_conforme secteur interdit (Capital Markets) | activité bancaire (« banking services ») | aucun | non_conforme |
+| Wells Fargo | WFC | non_conforme secteur interdit (Banks - Diversified) | — | aucun | non_conforme |
+| Intel Corporation | INTC | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic | majoritaire |
+| Netflix | NFLX | majoritaire  | divertissement (musique, films) : exclu par les fonds islamiques (activité : Entertainment) | aucun | ecartee |
+| Crowdstrike Holdings Class A | CRWD | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Linde Plc | LIN | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Amgen Inc | AMGN | majoritaire  | — | aucun | ecartee |
+| Siemens N Ag | SIE.DE | majoritaire  | filiale de crédit ou d'assurance (« financial services segment ») | aucun | ecartee |
+| Mitsubishi Ufj Financial Group | 8306.T | non_conforme secteur interdit (Banks - Diversified) | activité bancaire (« Banking Business ») | aucun | non_conforme |
+| Sap | SAP.DE | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Walt Disney | DIS | majoritaire  | divertissement (musique, films) : exclu par les fonds islamiques (activité : Entertainment); divertissement (« music distribution ») | aucun | ecartee |
+| International Business Machines Co | IBM | minoritaire  | — | SP Funds S&P 500 Sharia | minoritaire |
+| Gilead Sciences | GILD | majoritaire  | tabac (« Tobacco ») | SP Funds S&P 500 Sharia | a_verifier |
+| Morgan Stanley | MS | non_conforme secteur interdit (Capital Markets) | — | aucun | non_conforme |
+| Ge Vernova | GEV | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Arista Networks | ANET | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Citigroup | C | non_conforme secteur interdit (Banks - Diversified) | activité bancaire (« banking services ») | aucun | non_conforme |
+| Toyota Motor | 7203.T | non_conforme  | — | aucun | non_conforme |
+| Mcdonalds Corp | MCD | majoritaire  | restauration : porc ou alcool possibles (activité : Restaurants) | aucun | ecartee |
+| Commonwealth Bank Of Australia | CBA.AX | non_conforme secteur interdit (Banks - Diversified) | activité bancaire (« banking services ») | aucun | non_conforme |
+| Toronto Dominion | TD.TO | non_conforme secteur interdit (Banks - Diversified) | activité d'assurance (« property and casualty insurance »); activité bancaire (« banking services ») | aucun | non_conforme |
+| Oracle | ORCL | minoritaire  | — | SP Funds S&P 500 Sharia | minoritaire |
+| Pepsico | PEP | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Allianz | ALV.DE | non_conforme secteur interdit (Insurance - Diversified) | activité bancaire (« banking services ») | aucun | non_conforme |
+| Verizon Communications Inc | VZ | non_conforme  | — | aucun | non_conforme |
+| Amphenol Corp Class A | APH | majoritaire  | — | aucun | ecartee |
+| Analog Devices | ADI | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Kla | KLAC | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Abbott Laboratories | ABT | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Bhp Group Ltd | BHP.AX | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Nextera Energy | NEE | non_conforme  | — | aucun | non_conforme |
+| Qualcomm | QCOM | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Totalenergies | TTE.PA | minoritaire  | — | iShares MSCI World Islamic | minoritaire |
+| Welltower | WELL | non_conforme secteur interdit (REIT - Healthcare Facilities) | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | non_conforme |
+| Union Pacific | UNP | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Blackrock | BLK | non_conforme secteur interdit (Asset Management) | — | aucun | non_conforme |
+| Banco Santander | SAN.MC | non_conforme secteur interdit (Banks - Diversified) | activité bancaire (« banking services ») | aucun | non_conforme |
+| American Express | AXP | non_conforme secteur interdit (Credit Services) | — | aucun | non_conforme |
+| Conocophillips | COP | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Sony Group | 6758.T | majoritaire  | activité d'assurance (« life insurance ») | aucun | ecartee |
+| Shopify Subordinate Voting Class A | SHOP.TO | majoritaire  | — | aucun | ecartee |
+| Pfizer | PFE | minoritaire  | — | aucun | ecartee |
+| Iberdrola | IBE.MC | non_conforme  | — | aucun | non_conforme |
+| At&T | T | non_conforme  | — | aucun | non_conforme |
+| Deere | DE | non_conforme  | filiale de crédit ou d'assurance (« Financial Services segment »); filiale de crédit (« offers wholesale financing ») | aucun | non_conforme |
+| Charles Schwab | SCHW | non_conforme secteur interdit (Capital Markets) | — | aucun | non_conforme |
+| Tjx | TJX | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Recruit Holdings | 6098.T | majoritaire  | revenus de publicité : exclus par la norme S&P (activité : Internet Content & Information) | aucun | ecartee |
+| Salesforce | CRM | insuffisant  | — | SP Funds S&P 500 Sharia | insuffisant |
+| Ubs Group Ag | UBSG.SW | non_conforme secteur interdit (Banks - Diversified) | — | aucun | non_conforme |
+| Intuitive Surgical | ISRG | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Rolls-Royce Holdings Plc | RR.L | non_conforme secteur interdit (Aerospace & Defense) | — | aucun | non_conforme |
+| Schneider Electric | SU.PA | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Danaher | DHR | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Sumitomo Mitsui Financial Group | 8316.T | non_conforme secteur interdit (Banks - Diversified) | filiale de crédit (« offers loans ») | aucun | non_conforme |
+| Hitachi | 6501.T | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Banco Bilbao Vizcaya Argentaria | BBVA.MC | non_conforme secteur interdit (Banks - Diversified) | — | aucun | non_conforme |
+| S&P Global | SPGI | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Unilever Plc | ULVR.L | majoritaire  | — | aucun | ecartee |
+| Progressive | PGR | non_conforme secteur interdit (Insurance - Property & Casualty) | — | aucun | non_conforme |
+| Accenture Plc Class A | ACN | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Airbus Group | AIR.PA | non_conforme secteur interdit (Aerospace & Defense) | — | aucun | non_conforme |
+| Vertex Pharmaceuticals | VRTX | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Medtronic Plc | MDT | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Eaton Plc | ETN | majoritaire  | — | aucun | ecartee |
+| Chubb | CB | non_conforme secteur interdit (Insurance - Property & Casualty) | activité d'assurance (« Life Insurance ») | aucun | non_conforme |
+| Lair Liquide Societe Anonyme Pour | AI.PA | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Abb Ltd | ABBN.SW | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Novo Nordisk Class B | NOVO-B.CO | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Mckesson Corp | MCK | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Advantest | 6857.T | majoritaire  | — | aucun | ecartee |
+| Altria Group Inc | MO | non_conforme secteur interdit (Tobacco) | tabac (« tobacco ») | aucun | non_conforme |
+| Lowes Companies Inc | LOW | non_conforme  | — | SP Funds S&P 500 Sharia | non_conforme |
+| Tokyo Electron | 8035.T | insuffisant  | — | iShares MSCI World Islamic | insuffisant |
+| Bristol Myers Squibb | BMY | non_conforme  | — | aucun | non_conforme |
+| Automatic Data Processing Inc | ADP | majoritaire  | — | aucun | ecartee |
+| Boeing | BA | non_conforme secteur interdit (Aerospace & Defense) | armement (« weapons ») | aucun | non_conforme |
+| Unicredit | UCG.MI | non_conforme secteur interdit (Banks - Regional) | activité bancaire (« banking services ») | aucun | non_conforme |
+| Starbucks Corp | SBUX | majoritaire  | restauration : porc ou alcool possibles (activité : Restaurants) | aucun | ecartee |
+| Marvell Technology | MRVL | non_conforme  | — | SP Funds S&P 500 Sharia | non_conforme |
+| Lockheed Martin | LMT | non_conforme secteur interdit (Aerospace & Defense) | armement (« Missiles ») | aucun | non_conforme |
+| Uber Technologies | UBER | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Seagate Technology Holdings Plc | STX | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Safran Sa | SAF.PA | non_conforme secteur interdit (Aerospace & Defense) | — | aucun | non_conforme |
+| Prologis Reit | PLD | non_conforme secteur interdit (REIT - Industrial) | — | aucun | non_conforme |
+| British American Tobacco | BATS.L | non_conforme tabac | tabac (« Tobacco ») | aucun | non_conforme |
+| Booking Holdings | BKNG | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Parker-Hannifin | PH | majoritaire  | — | aucun | ecartee |
+| Mizuho Financial Group | 8411.T | non_conforme secteur interdit (Banks - Regional) | — | aucun | non_conforme |
+| Cme Group Class A | CME | majoritaire  | — | aucun | ecartee |
+| Bank Of Montreal | BMO.TO | non_conforme secteur interdit (Banks - Diversified) | activité bancaire (« banking services ») | aucun | non_conforme |
+| Sandisk | SNDK | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Compagnie Financiere Richemont Sa | CFR.SW | majoritaire  | — | aucun | ecartee |
+| Bp Plc | BP.L | minoritaire  | — | iShares MSCI World Islamic | minoritaire |
+| Loreal Sa | OR.PA | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Marathon Petroleum | MPC | non_conforme  | — | aucun | non_conforme |
+| Zurich Insurance Group Ag | ZURN.SW | non_conforme secteur interdit (Insurance - Diversified) | — | aucun | non_conforme |
+| Newmont | NEM | majoritaire  | — | iShares MSCI World Islamic, iShares MSCI USA Islamic, SP Funds S&P 500 Sharia | majoritaire |
+| Capital One Financial Corp | COF | non_conforme secteur interdit (Credit Services) | — | aucun | non_conforme |
+| Bank Of Nova Scotia | BNS.TO | non_conforme secteur interdit (Banks - Diversified) | — | aucun | non_conforme |
+| Stryker | SYK | majoritaire  | — | SP Funds S&P 500 Sharia | majoritaire |
+| Siemens Energy N Ag | ENR.DE | majoritaire  | — | iShares MSCI World Islamic | majoritaire |
+| Southern | SO | non_conforme  | — | aucun | non_conforme |

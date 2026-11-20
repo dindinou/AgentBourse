@@ -24,6 +24,7 @@ class Chiffres:
     tresorerie: float | None = None              # trésorerie + placements financiers (court et long terme)
     revenus_interets: float | None = None
     chiffre_affaires: float | None = None
+    description: str = ""                        # description de l'activité (en anglais)
 
 
 @dataclass
@@ -60,6 +61,11 @@ MAJORITAIRE = "majoritaire"
 MINORITAIRE = "minoritaire"
 NON_CONFORME = "non_conforme"
 INSUFFISANT = "insuffisant"
+# Niveaux donnés quand notre calcul est positif mais pas confirmé :
+ECARTEE = "ecartee"              # les fonds islamiques professionnels l'écartent
+A_VERIFIER = "a_verifier"        # activité interdite cachée possible
+NON_CONFIRMEE = "non_confirmee"  # aucun fonds islamique suivi ne la couvre
+POSITIFS = (UNANIMITE, MAJORITAIRE, MINORITAIRE)
 
 
 def _division(haut: float | None, bas: float | None) -> float | None:
@@ -130,3 +136,19 @@ def analyser(chiffres: Chiffres) -> tuple[str, dict[str, ResultatNorme], str | N
     resultats = {cle: tester_norme(chiffres, cle) for cle in config.NORMES}
     raison = raison_secteur_interdit(chiffres)
     return niveau(resultats, raison), resultats, raison
+
+
+def niveau_final(niveau_calcule: str, alertes: list[str], statut_fonds: str) -> str:
+    """Règle de prudence : jamais d'avis positif sans confirmation par un fonds islamique.
+
+    statut_fonds : "gardee", "ecartee" ou "non_couverte" (voir agentbourse/etf.py).
+    """
+    if niveau_calcule not in POSITIFS:
+        return niveau_calcule
+    if statut_fonds == "ecartee":
+        return ECARTEE
+    if alertes:
+        return A_VERIFIER
+    if statut_fonds != "gardee":
+        return NON_CONFIRMEE
+    return niveau_calcule

@@ -53,6 +53,23 @@ def test_chiffres_manquants_donne_insuffisant():
     assert c.analyser(entreprise(dette=None))[0] == c.INSUFFISANT
 
 
+def test_jamais_positif_sans_fonds_islamique():
+    assert c.niveau_final(c.MAJORITAIRE, [], "gardee") == c.MAJORITAIRE
+    assert c.niveau_final(c.MAJORITAIRE, [], "ecartee") == c.ECARTEE
+    assert c.niveau_final(c.MAJORITAIRE, [], "non_couverte") == c.NON_CONFIRMEE
+    assert c.niveau_final(c.UNANIMITE, ["filiale de crédit"], "gardee") == c.A_VERIFIER
+    assert c.niveau_final(c.NON_CONFORME, [], "gardee") == c.NON_CONFORME
+
+
+def test_detecteur_activites_cachees():
+    from agentbourse.alertes import detecter
+    assert detecter("Discount Stores", "")
+    assert detecter("Farm & Heavy Construction Machinery", "Its Financial Products segment offers loans")
+    assert detecter("Beverages - Non-Alcoholic", "Sells beer and wine")
+    assert not detecter("Beverages - Non-Alcoholic", "Sells non-alcoholic beverages")
+    assert not detecter("Software - Infrastructure", "Develops software and cloud services")
+
+
 def test_purification():
     assert c.purification(entreprise(revenus_interets=20)) == 0.02
 

@@ -1,127 +1,76 @@
-"""Compare notre analyseur aux vrais ETF islamiques.
+"""Compare notre calcul aux vrais ETF islamiques, pour mesurer nos erreurs.
 
-On prend les plus grosses actions du MSCI World (l'indice « normal ») et on regarde :
-  - si elles sont dans l'ETF iShares MSCI World Islamic (donc jugées conformes par MSCI),
-  - pour les américaines, si elles sont dans l'ETF SP Funds S&P 500 Sharia (SPUS),
-puis on compare avec ce que dit notre programme.
-
-Fichiers lus dans donnees_etf/ (téléchargés sur les sites d'iShares et de SP Funds) :
-  swda.csv (MSCI World), iswd.csv (MSCI World Islamic), spus.csv (S&P 500 Sharia).
+On prend les plus grosses actions du MSCI World (l'indice « normal »), on les passe dans notre
+calcul et notre détecteur d'activités cachées, et on regarde si les fonds islamiques les gardent.
+Le cas grave : notre calcul dit « conforme » alors que les fonds l'écartent.
 Résultat écrit dans docs/comparaison-etf.md.
 
 Utilisation :  python comparer_etf.py
 """
-import csv
 import sys
 from datetime import date
 from pathlib import Path
 
-from agentbourse import config, conformite, donnees
-
-DOSSIER = Path(__file__).parent / "donnees_etf"
-
-# Bourse (nom iShares) -> fin du code Yahoo.
-SUFFIXES = {
-    "New York Stock Exchange Inc.": "", "NASDAQ": "", "Cboe BZX formerly known as BATS": "",
-    "Tokyo Stock Exchange": ".T", "Toronto Stock Exchange": ".TO", "London Stock Exchange": ".L",
-    "Nyse Euronext - Euronext Paris": ".PA", "Xetra": ".DE", "Asx - All Markets": ".AX",
-    "SIX Swiss Exchange": ".SW", "Euronext Amsterdam": ".AS", "Borsa Italiana": ".MI",
-    "Hong Kong Exchanges And Clearing Ltd": ".HK", "Bolsa De Madrid": ".MC",
-    "Singapore Exchange": ".SI", "Omx Nordic Exchange Copenhagen A/S": ".CO",
-    "Nasdaq Omx Helsinki Ltd.": ".HE", "Tel Aviv Stock Exchange": ".TA", "Oslo Bors Asa": ".OL",
-    "Nasdaq Omx Nordic": ".ST", "Euronext Brussels": ".BR",
-}
-
-
-def lire_ishares(nom_fichier: str) -> list[dict]:
-    """Lit un fichier iShares (9 lignes d'en-tête avant le tableau). Ne garde que les actions."""
-    with open(DOSSIER / nom_fichier, encoding="utf-8-sig") as f:
-        lignes = f.read().splitlines()
-    debut = next(i for i, l in enumerate(lignes) if l.startswith("Ticker,"))
-    lecteur = csv.DictReader(lignes[debut:])
-    return [l for l in lecteur if l.get("Asset Class") == "Equity" and l.get("Ticker")]
-
-
-def symbole_yahoo(ligne: dict) -> str | None:
-    suffixe = SUFFIXES.get(ligne["Exchange"])
-    if suffixe is None:
-        return None
-    code = ligne["Ticker"].strip().rstrip(".")
-    if suffixe == "":
-        code = code.replace(".", "-").replace(" ", "-")
-    if suffixe == ".HK":
-        code = code.zfill(4)
-    return code + suffixe
+from agentbourse import alertes, config, conformite, donnees, etf
 
 
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
-    monde = lire_ishares("swda.csv")
-    monde.sort(key=lambda l: float(l["Weight (%)"]), reverse=True)
-    # Code + bourse : le même code peut désigner deux entreprises (SAN = Sanofi à Paris, Santander à Madrid).
-    islamique_msci = {(l["Ticker"], l["Exchange"]) for l in lire_ishares("iswd.csv")}
-    with open(DOSSIER / "spus.csv", encoding="utf-8-sig") as f:
-        islamique_sp = {l["StockTicker"].replace(".", "-") for l in csv.DictReader(f)}
+    fonds = etf.Fonds()
+    monde = etf.lire("swda", config.INDICES_PARENTS["swda"])  # déjà classé de la plus grosse à la plus petite
 
     lignes = []
-    for ligne in monde[: config.COMPARAISON_NB_ACTIONS]:
-        symbole = symbole_yahoo(ligne)
-        if symbole is None:
-            continue
-        americaine = SUFFIXES[ligne["Exchange"]] == ""
+    for action in [a for a in monde if a.symbole][: config.COMPARAISON_NB_ACTIONS]:
         try:
-            chiffres = donnees.charger(symbole)
-            niveau, resultats, raison = conformite.analyser(chiffres)
+            chiffres = donnees.charger(action.symbole)
         except Exception as erreur:  # action introuvable sur Yahoo, etc.
-            print(f"  {symbole} : impossible ({erreur})")
+            print(f"  {action.symbole} : impossible ({erreur})")
             continue
+        niveau_calcule, _, raison = conformite.analyser(chiffres)
+        liste_alertes = alertes.detecter(chiffres.activite, chiffres.description)
+        avis = fonds.avis(chiffres.symbole, chiffres.nom)
         lignes.append({
-            "nom": ligne["Name"].title(), "symbole": symbole, "niveau": niveau, "raison": raison or "",
-            "msci_etf": (ligne["Ticker"], ligne["Exchange"]) in islamique_msci,
-            "msci_nous": None if raison else resultats["msci"].conforme,
-            "sp_etf": (symbole in islamique_sp) if americaine else None,
-            "sp_nous": (None if raison else resultats["sp"].conforme) if americaine else None,
+            "nom": action.nom.title(), "symbole": action.symbole, "calcul": niveau_calcule,
+            "raison": raison or "", "alertes": liste_alertes, "fonds": avis.gardee_par,
+            "final": conformite.niveau_final(niveau_calcule, liste_alertes, avis.statut),
         })
-        print(f"  {symbole:10} {niveau:12} MSCI ETF={lignes[-1]['msci_etf']}")
-
+        print(f"  {action.symbole:10} {niveau_calcule:12} alertes={len(liste_alertes)} fonds={len(avis.gardee_par)}")
     ecrire_rapport(lignes)
 
 
-def _accord(lignes, cle_etf, cle_nous):
-    """Compte les cas où notre test MSCI (ou S&P) donne le même avis que l'ETF."""
-    comparables = [l for l in lignes if l[cle_etf] is not None and (l[cle_nous] is not None or l["raison"])]
-    def nous(l):  # secteur interdit = non conforme pour nous
-        return False if l["raison"] else l[cle_nous]
-    d_accord = [l for l in comparables if nous(l) == l[cle_etf]]
-    trop_gentils = [l for l in comparables if nous(l) and not l[cle_etf]]
-    trop_severes = [l for l in comparables if not nous(l) and l[cle_etf]]
-    return comparables, d_accord, trop_gentils, trop_severes
+def _liste(lignes) -> str:
+    return ", ".join(f"{l['nom']} ({l['symbole']})" for l in lignes) or "aucune"
 
 
 def ecrire_rapport(lignes) -> None:
-    oui = lambda v: "—" if v is None else ("oui" if v else "non")
-    texte = [f"# Comparaison avec les ETF islamiques ({date.today():%d/%m/%Y})", "",
-             f"Les {len(lignes)} plus grosses actions du MSCI World passées dans notre analyseur, "
-             "comparées à la composition réelle de deux ETF islamiques :",
-             "- **iShares MSCI World Islamic** (norme MSCI Islamic, monde entier) ;",
-             "- **SP Funds S&P 500 Sharia (SPUS)** (norme S&P Shariah, actions américaines).", ""]
-    for titre, cle_etf, cle_nous in [("MSCI Islamic", "msci_etf", "msci_nous"), ("S&P Shariah", "sp_etf", "sp_nous")]:
-        comparables, d_accord, gentils, severes = _accord(lignes, cle_etf, cle_nous)
-        if not comparables:
-            continue
-        texte += [f"## Norme {titre}", "",
-                  f"- Même avis que l'ETF : **{len(d_accord)} sur {len(comparables)}** "
-                  f"({len(d_accord) / len(comparables):.0%}).",
-                  f"- 🚨 **Nous disons conforme, l'ETF l'écarte : {len(gentils)}** (le cas grave) : "
-                  + (", ".join(f"{l['nom']} ({l['symbole']})" for l in gentils) or "aucun") + ".",
-                  f"- Nous l'écartons, l'ETF la garde : {len(severes)} : "
-                  + (", ".join(f"{l['nom']} ({l['symbole']})" for l in severes) or "aucun") + ".", ""]
-    texte += ["## Détail", "",
-              "| Action | Code | Notre niveau | Notre test MSCI | Dans l'ETF MSCI | Notre test S&P | Dans l'ETF S&P |",
-              "|---|---|---|---|---|---|---|"]
+    positif = lambda l: l["calcul"] in conformite.POSITIFS
+    gardees = [l for l in lignes if l["fonds"]]
+    ecartees = [l for l in lignes if not l["fonds"]]
+    graves = [l for l in ecartees if positif(l)]
+    attrapees = [l for l in graves if l["alertes"]]
+    ratees = [l for l in graves if not l["alertes"]]
+    fausses_alertes = [l for l in gardees if l["alertes"]]
+    trop_severes = [l for l in gardees if not positif(l)]
+    texte = [
+        f"# Comparaison avec les ETF islamiques ({date.today():%d/%m/%Y})", "",
+        f"Les {len(lignes)} plus grosses actions du MSCI World, passées dans notre calcul, puis comparées à la "
+        "composition de 4 fonds islamiques : " + ", ".join(f["nom"] for f in config.FONDS_ISLAMIQUES.values()) + ".",
+        "",
+        f"- Gardées par au moins un fonds islamique : **{len(gardees)}** ; écartées par tous : **{len(ecartees)}**.",
+        f"- 🚨 **Cas graves** (notre calcul dit conforme, les fonds écartent) : **{len(graves)}**.",
+        f"  - attrapés par notre détecteur d'activités cachées : **{len(attrapees)}** : {_liste(attrapees)}.",
+        f"  - ratés par notre détecteur : **{len(ratees)}** : {_liste(ratees)}.",
+        "  - Avec la règle « jamais positif sans un fonds islamique », ces cas graves ne reçoivent plus d'avis "
+        "positif : ils sont affichés « 🟠 Écartée par les fonds islamiques ».",
+        f"- Fausses alertes (alerte, mais un fonds islamique la garde) : {len(fausses_alertes)} : {_liste(fausses_alertes)}.",
+        f"- Trop sévères (notre calcul l'écarte, un fonds la garde) : {len(trop_severes)} : {_liste(trop_severes)}.",
+        "", "## Détail", "",
+        "| Action | Code | Notre calcul | Alertes | Fonds islamiques qui la gardent | Résultat final |",
+        "|---|---|---|---|---|---|",
+    ]
     for l in lignes:
-        texte.append(f"| {l['nom']} | {l['symbole']} | {l['niveau']} {l['raison']} | {oui(l['msci_nous'])} | "
-                     f"{oui(l['msci_etf'])} | {oui(l['sp_nous'])} | {oui(l['sp_etf'])} |")
+        texte.append(f"| {l['nom']} | {l['symbole']} | {l['calcul']} {l['raison']} | "
+                     f"{'; '.join(l['alertes']) or '—'} | {', '.join(l['fonds']) or 'aucun'} | {l['final']} |")
     (Path(__file__).parent / "docs" / "comparaison-etf.md").write_text("\n".join(texte) + "\n", encoding="utf-8")
     print("\nRapport écrit dans docs/comparaison-etf.md")
 

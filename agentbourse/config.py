@@ -75,9 +75,56 @@ ACTIVITES_INTERDITES_CONNUES = {
     "british american tobacco": "tabac",
 }
 
+# --- Activités à risque (cachées) -------------------------------------------------
+# Ne rendent pas l'action « non conforme », mais empêchent de dire « conforme » : « à vérifier ».
+# Activité Yahoo -> raison.
+ACTIVITES_A_RISQUE = {
+    "Discount Stores": "supermarché : vend souvent de l'alcool et du porc",
+    "Grocery Stores": "supermarché : vend souvent de l'alcool et du porc",
+    "Department Stores": "grand magasin : vend souvent de l'alcool",
+    "Internet Retail": "vente en ligne : vend souvent de l'alcool et du porc",
+    "Restaurants": "restauration : porc ou alcool possibles",
+    "Lodging": "hôtellerie : alcool, souvent jeux",
+    "Resorts & Casinos": "jeux d'argent",
+    "Entertainment": "divertissement (musique, films) : exclu par les fonds islamiques",
+    "Broadcasting": "médias et divertissement : exclus par les fonds islamiques",
+    "Advertising Agencies": "publicité : exclue par la norme S&P",
+    "Internet Content & Information": "revenus de publicité : exclus par la norme S&P",
+}
+# Phrase cherchée dans la description de l'entreprise (en anglais, expression régulière) -> raison.
+PHRASES_A_RISQUE = {
+    r"financial (products|services) segment": "filiale de crédit ou d'assurance",
+    r"\b(provides?|offers?) (retail |wholesale |customer |dealer )*(financing|loans|leasing)": "filiale de crédit",
+    r"\b(life|non-life|property and casualty) insurance": "activité d'assurance",
+    r"\bbanking (services|business|operations)": "activité bancaire",
+    r"(?<!non-)\balcoholic beverages|\b(beer|wines?|spirits|liquor)\b(?! industry)": "alcool",
+    r"\btobacco\b|\bcigarettes?\b": "tabac",
+    r"\bpork\b|\bham\b|\bbacon\b": "porc",
+    r"\b(casinos?|gambling|lotter(y|ies)|betting)\b": "jeux d'argent",
+    r"\b(music|motion pictures?|film) (segment|production|distribution|entertainment)": "divertissement",
+    r"\b(weapons|munitions|missiles|firearms)\b": "armement",
+}
+
 # --- Recherche ------------------------------------------------------------------
 NB_PROPOSITIONS = 5           # nombre d'actions proposées quand on cherche un nom
 SIMILARITE_MIN = 0.6          # 0 à 1 : à partir de quand un nom connu « ressemble »
+
+# --- Avis des ETF islamiques (deuxième vérification) -----------------------------
+# Composition téléchargée sur les sites des fonds, gardée dans donnees_etf/.
+_ISHARES = "https://www.ishares.com/ch/individual/en/products/{id}/x/1495092304805.ajax?fileType=csv&fileName=X_holdings&dataType=fund"
+FONDS_ISLAMIQUES = {
+    "iswd": {"nom": "iShares MSCI World Islamic", "url": _ISHARES.format(id=251394), "format": "ishares"},
+    "isus": {"nom": "iShares MSCI USA Islamic", "url": _ISHARES.format(id=251393), "format": "ishares"},
+    "isde": {"nom": "iShares MSCI EM Islamic", "url": _ISHARES.format(id=251392), "format": "ishares"},
+    "spus": {"nom": "SP Funds S&P 500 Sharia",
+             "url": "https://www.sp-funds.com/wp-content/uploads/data/TidalFG_Holdings_SPUS.csv", "format": "spfunds"},
+}
+# Indices « normaux » : une action qui y est mais qu'aucun fonds islamique ne garde a été écartée.
+INDICES_PARENTS = {
+    "swda": {"nom": "iShares Core MSCI World", "url": _ISHARES.format(id=251882), "format": "ishares"},
+    "eimi": {"nom": "iShares Core MSCI EM IMI", "url": _ISHARES.format(id=264659), "format": "ishares"},
+}
+ETF_RAFRAICHIR_APRES_JOURS = 7   # on retélécharge les compositions plus vieilles que ça
 
 # --- Comparaison avec les ETF islamiques ------------------------------------------
 # Nombre de plus grosses actions du MSCI World analysées (plus = plus long).

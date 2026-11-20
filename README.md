@@ -14,6 +14,10 @@ python -m venv .venv
 .venv/Scripts/python analyser.py "apple"
 ```
 
+Deux vérifications : notre calcul (données gratuites + détecteur d'activités cachées) et l'avis de vrais fonds islamiques (ETF iShares MSCI Islamic, SP Funds S&P 500 Sharia). **Jamais d'avis positif si aucun fonds islamique ne garde l'action.**
+
+Mesurer nos erreurs face aux fonds islamiques : `.venv/Scripts/python comparer_etf.py` (rapport dans `docs/comparaison-etf.md`).
+
 Tests (sans internet) : `.venv/Scripts/python -m pytest`
 
 > ⚠️ Outil de tri, pas une fatwa. Chiffres de Yahoo Finance, parfois faux ou anciens.
