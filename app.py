@@ -7,7 +7,7 @@ from datetime import date
 import pandas as pd
 import streamlit as st
 
-from agentbourse import alertes, config, conformite, donnees, etf, onu, recherche, simulation
+from agentbourse import alertes, config, conformite, donnees, etf, onu, panier, recherche, simulation
 from analyser import LEGENDE, STATUTS_FONDS, TITRES
 
 st.set_page_config(page_title="AgentBourse", page_icon="📈", layout="wide")
@@ -36,6 +36,12 @@ def cours_etf() -> pd.Series:
     return simulation.charger_cours_eur()
 
 
+@st.cache_data(ttl=86400, show_spinner="Récupération des cours des 50 actions du panier…")
+def donnees_panier():
+    actions = panier.composer()
+    return actions, panier.rendements_eur(actions)
+
+
 def pourcent(valeur: float | None) -> str:
     return "inconnu" if valeur is None else f"{valeur * 100:.1f} %"
 
@@ -44,7 +50,8 @@ def euros(valeur: float) -> str:
     return f"{valeur:,.0f} €".replace(",", " ")
 
 
-onglet_analyse, onglet_simulation = st.tabs(["🔎 Analyseur halal", "📈 Simulation en argent fictif"])
+onglet_analyse, onglet_simulation, onglet_panier = st.tabs(
+    ["🔎 Analyseur halal", "📈 Simulation en argent fictif", "🧺 Panier filtré"])
 
 # --- Onglet 1 : analyseur ---------------------------------------------------------------------
 with onglet_analyse:
@@ -130,3 +137,25 @@ with onglet_simulation:
     st.caption(f"Impôt = flat tax de {config.FLAT_TAX * 100:.1f} % si on vendait tout le dernier jour. "
                "Les dividendes sont supposés réinvestis et imposés à la fin (un peu trop optimiste). "
                "Les résultats passés ne disent rien du futur.")
+
+# --- Onglet 3 : panier filtré -----------------------------------------------------------------
+with onglet_panier:
+    st.write(f"Les {config.PANIER_NB_ACTIONS} plus grosses actions de l'ETF **iShares MSCI World Islamic**, "
+             "comparées au même panier **sans les actions citées par l'ONU** (Gaza, colonies). "
+             f"{euros(config.VERSEMENT_MENSUEL_EUR)} par mois (réglable dans l'onglet simulation), stratégie A.")
+    st.warning("Composition d'aujourd'hui appliquée depuis 2015 : les deux paniers sont avantagés "
+               "(on choisit après coup les entreprises qui ont réussi). Seul l'écart entre les deux a du sens.")
+    actions, rendements = donnees_panier()
+    retirees = [a for a in actions if a.citations]
+    st.markdown("**Retirées du panier filtré :** " + "; ".join(
+        f"{a.nom} ({a.poids:.1f} % du fonds) — {a.citations[0].reference}" for a in retirees))
+
+    resultats = []
+    for nom, cours_panier in panier.deux_paniers(actions, rendements).items():
+        r = simulation.strategie_a(cours_panier.iloc[1:])
+        r.nom = nom
+        resultats.append(r)
+    st.dataframe(pd.DataFrame([{
+        "Panier": r.nom, "Versé": euros(r.verse), "Net après impôt": euros(r.net_apres_impot),
+        "Gain net": euros(r.gain_net)} for r in resultats]), hide_index=True)
+    st.line_chart(pd.DataFrame({r.nom: r.courbe for r in resultats}), y_label="Valeur du portefeuille (€)")

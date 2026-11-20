@@ -46,3 +46,11 @@ def test_strategie_b_attend_que_le_cours_passe_sous_la_moyenne():
 def test_strategie_b_garde_l_argent_si_le_cours_monte_toujours():
     r = s.strategie_b(cours([10, 11, 12, 13, 14]))
     assert r.nb_achats == 0 and r.valeur_finale == 500 and r.impot == 0
+
+
+def test_indice_panier_pondere_et_actions_cotees_plus_tard():
+    from agentbourse.panier import indice
+    r = pd.DataFrame({"A": [None, 0.10, 0.10], "B": [None, None, -0.10]})
+    i = indice(r, {"A": 75, "B": 25})
+    assert i.iloc[1] == pytest.approx(110)                       # B pas encore cotée : seulement A
+    assert i.iloc[2] == pytest.approx(110 * (1 + 0.75 * 0.10 - 0.25 * 0.10))

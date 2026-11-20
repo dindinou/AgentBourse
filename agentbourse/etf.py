@@ -45,6 +45,8 @@ class Ligne:
     """Une action dans un fonds."""
     symbole: str | None   # code Yahoo, si on sait le calculer
     nom: str
+    poids: float = 0.0    # part du fonds, en % (fichiers iShares seulement)
+    devise: str = ""      # devise de cotation (fichiers iShares seulement)
 
 
 @dataclass
@@ -102,7 +104,8 @@ def lire(cle: str, fonds: dict) -> list[Ligne]:
         return [Ligne(l["StockTicker"].replace(".", "-"), l["SecurityName"])
                 for l in csv.DictReader(lignes) if l.get("StockTicker")]
     debut = next(i for i, l in enumerate(lignes) if l.startswith("Ticker,"))
-    return [Ligne(symbole_yahoo(l["Ticker"], l["Exchange"]), l["Name"])
+    return [Ligne(symbole_yahoo(l["Ticker"], l["Exchange"]), l["Name"],
+                  float(l["Weight (%)"].replace("’", "").replace(",", "") or 0), l["Market Currency"])
             for l in csv.DictReader(lignes[debut:]) if l.get("Asset Class") == "Equity" and l.get("Ticker")]
 
 

@@ -139,3 +139,7 @@ FRAIS_PAR_ORDRE_EUR = 1.0            # frais fixes du courtier à chaque achat (
 FRAIS_PAR_ORDRE_POURCENT = 0.0       # frais en pourcentage de chaque achat (0.001 = 0,1 %)
 MOYENNE_JOURS = 200                  # stratégie B : on achète quand le cours passe sous sa moyenne sur ce nombre de jours
 FLAT_TAX = 0.314                     # impôt français sur les plus-values (prélèvement forfaitaire unique)
+
+# --- Panier filtré (simulation avec nos propres règles) --------------------------------
+PANIER_FONDS = "iswd"          # fonds islamique de départ (voir FONDS_ISLAMIQUES)
+PANIER_NB_ACTIONS = 50         # on garde ses N plus grosses actions

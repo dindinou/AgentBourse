@@ -40,3 +40,14 @@ A (acheter chaque mois) et B (acheter seulement quand le cours passe sous sa moy
 ```
 
 ![Simulation](docs/simulation.png)
+
+## Panier filtré
+
+Les 50 plus grosses actions de l'ETF MSCI World Islamic, comparées au même panier sans les actions citées par l'ONU.
+Attention : la composition d'aujourd'hui est appliquée depuis 2015, donc seul l'écart entre les deux paniers a du sens.
+
+```bash
+.venv/Scripts/python simuler_panier.py
+```
+
+![Panier filtré](docs/panier.png)
