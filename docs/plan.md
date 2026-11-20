@@ -9,8 +9,11 @@
 - 20/11/2026 : **troisième vérification, critère éthique ONU** (`agentbourse/onu.py`, liste dans `donnees_onu/entreprises.csv`, 188 entreprises avec leur source) : rapport Albanese A/HRC/59/23 + base ONU des colonies A/HRC/60/19. Niveau 🟣 « Citée par l'ONU », jamais d'avis positif. Sur les 150 plus grosses actions : 13 citées, dont 7 gardées par un fonds islamique (Microsoft, Alphabet, Chevron, IBM, Booking, BP). Plan : `docs/features/genocide-onu.md`.
 - 20/11/2026 : **partie 2, simulation en argent fictif** (`python simuler.py`, réglages dans `config.py`, courbe dans `docs/simulation.png`) : ETF MSCI World Islamic en euros, 70 €/mois de janv. 2015 à nov. 2026, 10 010 € versés. A (chaque mois) : 16 147 € nets après frais et flat tax ; B (sous la moyenne 200 jours) : 16 352 €. L'écart (+205 €) vient surtout des frais (53 achats au lieu de 143) ; sans frais, B ne gagne que 91 €.
 
+- 20/11/2026 : **tableau de bord** (`app.py`, Streamlit) : onglet analyseur (recherche, choix de l'action, 3 vérifications, légende) et onglet simulation (curseurs : versement, frais, moyenne, date de début ; tableau et courbe). Lancer : `.venv/Scripts/streamlit run app.py`.
+
 ## Prochaine étape
-- Tableau de bord Streamlit (un onglet analyseur, un onglet simulation).
+- Simulation avec un panier d'actions filtré par notre analyseur (l'ETF contient Microsoft et Google, cités par l'ONU).
+- Mettre le tableau de bord en ligne (Streamlit Community Cloud, gratuit) pour le CV.
 - Vérifier la mise à jour 2026 de la base ONU des colonies (214 entreprises annoncées) et compléter la liste.
 - Faire relire l'échelle et la légende par Salahdin (et si possible par une personne de savoir).
 - Améliorer le détecteur : 16 cas graves lui échappent encore (Coca-Cola, Nestlé, Pfizer, ADP…), voir `docs/comparaison-etf.md`.
@@ -45,7 +48,7 @@
 - Stratégie B : « bon moment » = on garde l'argent tant que le cours est au-dessus de sa moyenne sur 200 jours, on achète tout quand il passe dessous.
 - Résultat après frais (réglables) et après flat tax 31,4 %, avec une courbe.
 
-### Tableau de bord (Streamlit, à faire)
+### Tableau de bord (Streamlit, fait)
 Un onglet par partie. L'analyseur y aura une barre de recherche.
 
 ## Plus tard (V2)

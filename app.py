@@ -1,0 +1,132 @@
+"""Tableau de bord AgentBourse : un onglet analyseur halal, un onglet simulation en argent fictif.
+
+Lancer :  .venv/Scripts/streamlit run app.py
+"""
+from datetime import date
+
+import pandas as pd
+import streamlit as st
+
+from agentbourse import alertes, config, conformite, donnees, etf, onu, recherche, simulation
+from analyser import LEGENDE, STATUTS_FONDS, TITRES
+
+st.set_page_config(page_title="AgentBourse", page_icon="📈", layout="wide")
+st.title("AgentBourse")
+st.caption("Projet d'apprentissage. Argent fictif uniquement. Ce n'est ni un conseil en investissement, ni une fatwa.")
+
+
+# --- Données gardées en mémoire (pour ne pas tout retélécharger à chaque clic) -----------------
+@st.cache_resource(show_spinner="Chargement de la composition des fonds islamiques…")
+def fonds_islamiques() -> etf.Fonds:
+    return etf.Fonds()
+
+
+@st.cache_data(ttl=86400, show_spinner="Récupération des chiffres de l'entreprise…")
+def chiffres_de(symbole: str) -> conformite.Chiffres:
+    return donnees.charger(symbole)
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def propositions(texte: str) -> list[recherche.Proposition]:
+    return recherche.chercher(texte)
+
+
+@st.cache_data(ttl=86400, show_spinner="Récupération des cours de l'ETF…")
+def cours_etf() -> pd.Series:
+    return simulation.charger_cours_eur()
+
+
+def pourcent(valeur: float | None) -> str:
+    return "inconnu" if valeur is None else f"{valeur * 100:.1f} %"
+
+
+def euros(valeur: float) -> str:
+    return f"{valeur:,.0f} €".replace(",", " ")
+
+
+onglet_analyse, onglet_simulation = st.tabs(["🔎 Analyseur halal", "📈 Simulation en argent fictif"])
+
+# --- Onglet 1 : analyseur ---------------------------------------------------------------------
+with onglet_analyse:
+    with st.expander("Comment lire le résultat (légende)"):
+        st.text(LEGENDE)
+
+    texte = st.text_input("Nom de l'action (même mal écrit)", placeholder="ex. aple, total energie, aramco")
+    if texte:
+        choix = propositions(texte)
+        if not choix:
+            st.warning(f"Aucune action trouvée pour « {texte} ». Essaie un autre nom ou le code (ex. AAPL).")
+        else:
+            action = st.radio("Tu cherches bien l'une de ces actions ?", choix,
+                              format_func=lambda p: f"{p.nom} ({p.symbole}) {p.bourse}")
+            if st.button("Analyser", type="primary"):
+                chiffres = chiffres_de(action.symbole)
+                niveau_calcule, resultats, raison = conformite.analyser(chiffres)
+                liste_alertes = alertes.detecter(chiffres.activite, chiffres.description)
+                avis = fonds_islamiques().avis(chiffres.symbole, chiffres.nom)
+                citations = onu.citations(chiffres.symbole, chiffres.nom)
+                niveau = conformite.niveau_final(niveau_calcule, liste_alertes, avis.statut, bool(citations))
+
+                st.subheader(f"{chiffres.nom} ({chiffres.symbole})")
+                st.caption(f"{chiffres.pays} — {chiffres.activite}")
+                st.markdown(f"## {TITRES[niveau]}")
+                if raison:
+                    st.write(f"Raison : {raison}")
+                if niveau in conformite.POSITIFS:
+                    st.info(f"Purification : donner {pourcent(conformite.purification(chiffres))} de chaque dividende.")
+
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.markdown("**1. Notre calcul** (données publiques gratuites)")
+                    st.write(TITRES[niveau_calcule])
+                    tableau = [{"Norme": r.nom, "Test": t.libelle, "Valeur": pourcent(t.ratio),
+                                "Maximum": pourcent(t.seuil),
+                                "Résultat": {True: "✅", False: "❌", None: "?"}[t.reussi]}
+                               for r in resultats.values() for t in r.tests]
+                    st.dataframe(pd.DataFrame(tableau), hide_index=True)
+                    st.markdown("**Activités cachées**")
+                    if liste_alertes:
+                        for a in liste_alertes:
+                            st.warning(a)
+                    else:
+                        st.write("Rien trouvé.")
+                with col2:
+                    st.markdown("**2. Avis des fonds islamiques**")
+                    st.write(STATUTS_FONDS[avis.statut].format(fonds=", ".join(avis.gardee_par)))
+                with col3:
+                    st.markdown("**3. Listes de l'ONU**")
+                    if citations:
+                        for c in citations:
+                            st.error(f"🟣 {c.source} — {c.reference}")
+                    else:
+                        st.write("Pas citée.")
+
+# --- Onglet 2 : simulation --------------------------------------------------------------------
+with onglet_simulation:
+    st.write("Que serait devenu un versement mensuel dans l'ETF **iShares MSCI World Islamic**, "
+             "converti en euros, dividendes réinvestis ? Aucun ordre réel : seulement des calculs sur les cours passés.")
+    cours = cours_etf()
+
+    g, d = st.columns(2)
+    with g:
+        config.VERSEMENT_MENSUEL_EUR = st.slider("Versement par mois (€)", 10, 1000, int(config.VERSEMENT_MENSUEL_EUR), 10)
+        config.FRAIS_PAR_ORDRE_EUR = st.slider("Frais par achat (€)", 0.0, 5.0, float(config.FRAIS_PAR_ORDRE_EUR), 0.5)
+    with d:
+        config.MOYENNE_JOURS = st.slider("Stratégie B : moyenne sur combien de jours", 20, 300, int(config.MOYENNE_JOURS), 10)
+        premier_jour = cours.index[0].date()  # premier jour de bourse (le 1er janvier est férié)
+        debut = st.date_input("Début", max(date.fromisoformat(config.SIMULATION_DEBUT), premier_jour),
+                              min_value=premier_jour, max_value=cours.index[-1].date())
+    periode = cours[cours.index >= pd.Timestamp(debut)]
+
+    resultats = [simulation.strategie_a(periode), simulation.strategie_b(periode)]
+    st.dataframe(pd.DataFrame([{
+        "Stratégie": r.nom, "Versé": euros(r.verse), "Frais": euros(r.frais), "Valeur": euros(r.valeur_finale),
+        "Impôt (flat tax)": euros(r.impot), "Net après impôt": euros(r.net_apres_impot),
+        "Gain net": euros(r.gain_net), "Achats": r.nb_achats,
+    } for r in resultats]), hide_index=True)
+
+    courbes = pd.DataFrame({r.nom: r.courbe for r in resultats})
+    st.line_chart(courbes, y_label="Valeur du portefeuille (€)")
+    st.caption(f"Impôt = flat tax de {config.FLAT_TAX * 100:.1f} % si on vendait tout le dernier jour. "
+               "Les dividendes sont supposés réinvestis et imposés à la fin (un peu trop optimiste). "
+               "Les résultats passés ne disent rien du futur.")
