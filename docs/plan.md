@@ -7,8 +7,10 @@
 - 20/11/2026 : **comparaison avec les ETF islamiques** (`comparer_etf.py`, rapport dans `docs/comparaison-etf.md`) : même avis que l'ETF MSCI World Islamic dans 86 % des cas, que l'ETF S&P 500 Sharia dans 81 %. Le cas grave (nous disons conforme, l'ETF écarte) touche surtout des activités interdites cachées : supermarchés (alcool, porc), divertissement et médias, filiales de crédit.
 - 20/11/2026 : **deux vérifications** dans l'analyseur : (1) notre calcul + un détecteur d'activités cachées (supermarché, filiale de crédit, divertissement…, réglages dans `config.py`) ; (2) l'avis de 4 fonds islamiques (iShares MSCI World / USA / EM Islamic, SP Funds S&P 500 Sharia), téléchargés automatiquement chaque semaine. **Règle : jamais d'avis positif sans un fonds islamique qui garde l'action.** Sur les 150 plus grosses actions, 28 cas graves sans cette règle ; le détecteur seul en attrape 12, la règle bloque les 28.
 - 20/11/2026 : **troisième vérification, critère éthique ONU** (`agentbourse/onu.py`, liste dans `donnees_onu/entreprises.csv`, 188 entreprises avec leur source) : rapport Albanese A/HRC/59/23 + base ONU des colonies A/HRC/60/19. Niveau 🟣 « Citée par l'ONU », jamais d'avis positif. Sur les 150 plus grosses actions : 13 citées, dont 7 gardées par un fonds islamique (Microsoft, Alphabet, Chevron, IBM, Booking, BP). Plan : `docs/features/genocide-onu.md`.
+- 20/11/2026 : **partie 2, simulation en argent fictif** (`python simuler.py`, réglages dans `config.py`, courbe dans `docs/simulation.png`) : ETF MSCI World Islamic en euros, 70 €/mois de janv. 2015 à nov. 2026, 10 010 € versés. A (chaque mois) : 16 147 € nets après frais et flat tax ; B (sous la moyenne 200 jours) : 16 352 €. L'écart (+205 €) vient surtout des frais (53 achats au lieu de 143) ; sans frais, B ne gagne que 91 €.
 
 ## Prochaine étape
+- Tableau de bord Streamlit (un onglet analyseur, un onglet simulation).
 - Vérifier la mise à jour 2026 de la base ONU des colonies (214 entreprises annoncées) et compléter la liste.
 - Faire relire l'échelle et la légende par Salahdin (et si possible par une personne de savoir).
 - Améliorer le détecteur : 16 cas graves lui échappent encore (Coca-Cola, Nestlé, Pfizer, ADP…), voir `docs/comparaison-etf.md`.
@@ -37,7 +39,7 @@
   5. ⚪ **Données insuffisantes** : on ne peut pas trancher.
 - **Purification** : part du dividende à donner en aumône = revenus d'intérêts ÷ chiffre d'affaires.
 
-### Partie 2 — Simulation en argent fictif (`agentbourse/simulation.py`, à faire)
+### Partie 2 — Simulation en argent fictif (`agentbourse/simulation.py`, faite)
 - ETF iShares MSCI World Islamic (IE00B27YCN58), cours en euros, depuis 2015.
 - Stratégie A : 70 €/mois chaque mois.
 - Stratégie B : « bon moment » = on garde l'argent tant que le cours est au-dessus de sa moyenne sur 200 jours, on achète tout quand il passe dessous.

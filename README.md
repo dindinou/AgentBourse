@@ -21,3 +21,14 @@ Mesurer nos erreurs face aux fonds islamiques : `.venv/Scripts/python comparer_e
 Tests (sans internet) : `.venv/Scripts/python -m pytest`
 
 > ⚠️ Outil de tri, pas une fatwa. Chiffres de Yahoo Finance, parfois faux ou anciens.
+
+## Simulation en argent fictif
+
+70 € par mois depuis 2015 dans l'ETF iShares MSCI World Islamic, deux stratégies comparées après frais et flat tax :
+A (acheter chaque mois) et B (acheter seulement quand le cours passe sous sa moyenne des 200 derniers jours).
+
+```bash
+.venv/Scripts/python simuler.py
+```
+
+![Simulation](docs/simulation.png)

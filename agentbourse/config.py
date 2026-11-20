@@ -129,3 +129,13 @@ ETF_RAFRAICHIR_APRES_JOURS = 7   # on retélécharge les compositions plus vieil
 # --- Comparaison avec les ETF islamiques ------------------------------------------
 # Nombre de plus grosses actions du MSCI World analysées (plus = plus long).
 COMPARAISON_NB_ACTIONS = 150
+
+# --- Simulation en argent fictif (partie 2) ------------------------------------------
+SIMULATION_SYMBOLE = "ISDW.L"        # iShares MSCI World Islamic (IE00B27YCN58), cotée en dollars à Londres
+SIMULATION_DEVISE = "USD"            # devise de cotation, convertie en euros
+SIMULATION_DEBUT = "2015-01-01"
+VERSEMENT_MENSUEL_EUR = 70.0
+FRAIS_PAR_ORDRE_EUR = 1.0            # frais fixes du courtier à chaque achat (0 si plan d'épargne gratuit)
+FRAIS_PAR_ORDRE_POURCENT = 0.0       # frais en pourcentage de chaque achat (0.001 = 0,1 %)
+MOYENNE_JOURS = 200                  # stratégie B : on achète quand le cours passe sous sa moyenne sur ce nombre de jours
+FLAT_TAX = 0.314                     # impôt français sur les plus-values (prélèvement forfaitaire unique)
