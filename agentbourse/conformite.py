@@ -2,6 +2,7 @@
 
 Aucun accès à internet ici : seulement des calculs, faciles à tester.
 """
+import unicodedata
 from dataclasses import dataclass, field
 
 from agentbourse import config
@@ -20,7 +21,7 @@ class Chiffres:
     capitalisation_36_mois: float | None = None  # valeur en bourse moyenne sur 36 mois
     actifs: float | None = None                  # total du bilan
     dette: float | None = None                   # dette totale (à intérêt)
-    tresorerie: float | None = None              # trésorerie + placements à court terme
+    tresorerie: float | None = None              # trésorerie + placements financiers (court et long terme)
     revenus_interets: float | None = None
     chiffre_affaires: float | None = None
 
@@ -88,9 +89,10 @@ def tester_norme(chiffres: Chiffres, cle: str) -> ResultatNorme:
 
 def raison_secteur_interdit(chiffres: Chiffres) -> str | None:
     """Renvoie pourquoi le secteur est interdit, ou None s'il ne l'est pas (à notre connaissance)."""
-    connue = config.ACTIVITES_INTERDITES_CONNUES.get(chiffres.symbole.upper())
-    if connue:
-        return connue
+    nom = unicodedata.normalize("NFKD", chiffres.nom).encode("ascii", "ignore").decode().lower()
+    for morceau, raison in config.ACTIVITES_INTERDITES_CONNUES.items():
+        if morceau in nom:
+            return raison
     texte = f"{chiffres.secteur} {chiffres.activite}".lower()
     for mot in config.SECTEURS_INTERDITS:
         if mot in texte:

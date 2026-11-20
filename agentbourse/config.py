@@ -58,12 +58,21 @@ SECTEURS_INTERDITS = [
     "reit", "adult",
 ]
 
-# Entreprises dont l'activité interdite n'apparaît pas dans leur secteur Yahoo.
-# Code de l'action -> raison. Liste à compléter.
+# Entreprises dont l'activité interdite n'apparaît pas toujours dans leur secteur Yahoo.
+# Morceau du nom de l'entreprise (en minuscules, sans accents) -> raison.
+# On cherche par le nom pour reconnaître l'entreprise sur toutes les bourses
+# (LVMH à Paris, à New York, à Francfort…). Liste à compléter.
 ACTIVITES_INTERDITES_CONNUES = {
-    "MC.PA": "vins et spiritueux (Moët, Hennessy) : plus de 5 % du chiffre d'affaires",
-    "RI.PA": "spiritueux (Pernod Ricard)",
-    "DGE.L": "spiritueux (Diageo)",
+    "moet hennessy": "vins et spiritueux (Moët, Hennessy) : plus de 5 % du chiffre d'affaires",
+    "pernod ricard": "spiritueux",
+    "remy cointreau": "spiritueux",
+    "diageo": "spiritueux",
+    "heineken": "bière",
+    "anheuser-busch": "bière",
+    "carlsberg": "bière",
+    "constellation brands": "vins et bières",
+    "philip morris": "tabac",
+    "british american tobacco": "tabac",
 }
 
 # --- Recherche ------------------------------------------------------------------

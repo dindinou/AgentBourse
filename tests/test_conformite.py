@@ -42,8 +42,11 @@ def test_banque_non_conforme_meme_sans_dette():
     assert niveau == c.NON_CONFORME and "interdit" in raison
 
 
-def test_activite_interdite_connue():
-    assert c.analyser(entreprise(symbole="MC.PA", activite="Luxury Goods"))[0] == c.NON_CONFORME
+def test_activite_interdite_connue_sur_toutes_les_bourses():
+    for symbole in ("MC.PA", "LVMUY", "MOH.DE"):
+        lvmh = entreprise(symbole=symbole, activite="Luxury Goods",
+                          nom="LVMH Moët Hennessy - Louis Vuitton, Société Européenne")
+        assert c.analyser(lvmh)[0] == c.NON_CONFORME
 
 
 def test_chiffres_manquants_donne_insuffisant():

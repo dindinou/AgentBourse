@@ -54,6 +54,16 @@ def charger(symbole: str) -> Chiffres:
 
     bilan = action.balance_sheet
     resultats = action.income_stmt
+
+    # Trésorerie au sens de l'AAOIFI : argent + placements à intérêt, à court ET à long terme.
+    # Les parts dans d'autres entreprises (filiales, coentreprises) ne comptent pas.
+    tresorerie = _premiere_valeur(bilan, [
+        "Cash Cash Equivalents And Short Term Investments",
+        "Cash And Cash Equivalents",
+    ])
+    placements_long_terme = _premiere_valeur(bilan, ["Investmentin Financial Assets"])
+    if tresorerie is not None and placements_long_terme is not None:
+        tresorerie += placements_long_terme
     return Chiffres(
         symbole=symbole.upper(),
         nom=info.get("longName") or info.get("shortName") or symbole,
@@ -65,10 +75,7 @@ def charger(symbole: str) -> Chiffres:
         capitalisation_36_mois=capitalisation_36_mois,
         actifs=_premiere_valeur(bilan, ["Total Assets"]),
         dette=_premiere_valeur(bilan, ["Total Debt"]),
-        tresorerie=_premiere_valeur(bilan, [
-            "Cash Cash Equivalents And Short Term Investments",
-            "Cash And Cash Equivalents",
-        ]),
+        tresorerie=tresorerie,
         revenus_interets=_premiere_valeur(resultats, ["Interest Income", "Interest Income Non Operating"]),
         chiffre_affaires=_premiere_valeur(resultats, ["Total Revenue", "Operating Revenue"]),
     )
