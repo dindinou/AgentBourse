@@ -19,3 +19,8 @@ Argent fictif uniquement. Pas un conseil en investissement.
 ## 2026-11-26
 
 - Portefeuille fictif : **10 237.72 €** ; indice : 102.48 (base 100 au lancement).
+
+## 2026-11-27
+
+- 1 action(s) sans cours aujourd'hui : valeur inchangée pour elles.
+- Portefeuille fictif : **10 272.77 €** ; indice : 102.83 (base 100 au lancement).
